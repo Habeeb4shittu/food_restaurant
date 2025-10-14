@@ -96,6 +96,71 @@ body {
   pointer-events: none;
 }
 
+.hero-spotlight-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.12);
+  padding: 1.25rem;
+  color: #fff;
+  backdrop-filter: blur(18px);
+  transition: transform 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+  --spotlight-accent: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.08) 80%);
+}
+
+.hero-spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  border-radius: inherit;
+  background: var(--spotlight-accent);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hero-spotlight-card:hover,
+.hero-spotlight-card:focus-within {
+  transform: translateY(-6px);
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.hero-spotlight-card:hover::before,
+.hero-spotlight-card:focus-within::before {
+  opacity: 0.55;
+}
+
+.hero-spotlight-card__halo {
+  position: absolute;
+  inset: -25%;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28) 0%, transparent 70%);
+  opacity: 0.65;
+  filter: blur(45px);
+  pointer-events: none;
+}
+
+.hero-spotlight-card__image {
+  position: relative;
+  height: 3.75rem;
+  width: 3.75rem;
+  flex-shrink: 0;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.hero-spotlight-card__image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22, 15, 9, 0.55) 0%, rgba(22, 15, 9, 0.1) 100%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
 .hero-glow {
   position: absolute;
   z-index: 0;

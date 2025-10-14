@@ -4,10 +4,27 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, ComponentType, SVGProps } from "react";
+
+import {
+  ArrowRightIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  CloseIcon,
+  DessertIcon,
+  FlameIcon,
+  LeafIcon,
+  MailIcon,
+  MapPinIcon,
+  PhoneIcon,
+  SparklesIcon,
+  StarIcon,
+  UtensilsIcon,
+} from "../components/icons";
 
 type SectionKey = "hero" | "highlights" | "promise" | "mission" | "contact";
 
-type IconProps = React.SVGProps<SVGSVGElement>;
+type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
 type BackgroundConfig =
   | {
@@ -47,6 +64,8 @@ const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
       "radial-gradient(120% 140% at 30% 15%, rgba(251, 244, 234, 0.96) 0%, rgba(232, 218, 196, 0.94) 45%, rgba(196, 176, 141, 0.9) 100%)",
     texture:
       "radial-gradient(circle at 80% 20%, rgba(120, 89, 45, 0.22), transparent 55%), radial-gradient(circle at 10% 85%, rgba(209, 170, 104, 0.2), transparent 60%)",
+    overlay:
+      "radial-gradient(140% 140% at 50% 40%, rgba(20, 12, 6, 0.22), rgba(20, 12, 6, 0.05) 60%, transparent 100%)",
   },
   promise: {
     kind: "video",
@@ -63,6 +82,8 @@ const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
       "radial-gradient(120% 130% at 15% 85%, rgba(245, 236, 223, 0.98), rgba(219, 205, 181, 0.92) 50%, rgba(176, 158, 127, 0.9) 100%)",
     texture:
       "radial-gradient(circle at 80% 10%, rgba(74, 58, 37, 0.26), transparent 55%), radial-gradient(circle at 20% 40%, rgba(171, 141, 86, 0.24), transparent 58%)",
+    overlay:
+      "linear-gradient(180deg, rgba(17, 10, 6, 0.18) 0%, rgba(24, 16, 10, 0.12) 65%, rgba(27, 18, 12, 0.05) 100%)",
   },
   contact: {
     kind: "video",
@@ -75,13 +96,23 @@ const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
 };
 
-const heroHighlights = [
+const heroHighlights: {
+  title: string;
+  description: string;
+  image: string;
+  tag: string;
+  icon: IconComponent;
+  accent: string;
+}[] = [
   {
     title: "Fire-Roasted Langoustine",
     description:
       "Brushed with smoked beurre monté, fennel pollen, and charred Meyer lemon pearls.",
     image:
       "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=640&q=80",
+    tag: "Signature Course",
+    icon: UtensilsIcon,
+    accent: "linear-gradient(135deg, #f8d5a8 0%, #d88540 75%)",
   },
   {
     title: "Velvet Truffle Cappelletti",
@@ -89,6 +120,9 @@ const heroHighlights = [
       "Hand-folded pasta in parmesan brodo, finished with aged balsamic and porcini oil.",
     image:
       "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=640&q=80",
+    tag: "Fire & Aromatics",
+    icon: FlameIcon,
+    accent: "linear-gradient(135deg, #f5c4b3 0%, #cf6438 75%)",
   },
   {
     title: "Amber Patisserie Tableau",
@@ -96,6 +130,9 @@ const heroHighlights = [
       "Caramelia mousse, brûléed figs, and toasted pistachio praline in warm candlelight.",
     image:
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=640&q=80",
+    tag: "Patisserie",
+    icon: DessertIcon,
+    accent: "linear-gradient(135deg, #f8e1c9 0%, #d89f54 80%)",
   },
 ];
 
@@ -121,159 +158,18 @@ const missionDetails = [
   },
 ];
 
-const contactDetails = [
+const contactDetails: { title: string; description: string; icon: IconComponent }[] = [
   {
     title: "Visit",
     description: "214 Grove Street · Portland, Maine",
-    icon: IconMapPin,
+    icon: MapPinIcon,
   },
   {
     title: "Hours",
     description: "Wednesday – Sunday · 5pm – late",
-    icon: IconClock,
+    icon: ClockIcon,
   },
 ];
-
-function IconLeaf(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M5 19c9 0 14-5 14-14-9 0-14 5-14 14Z" />
-      <path d="M5 19c0-7 4-11 11-11" />
-    </svg>
-  );
-}
-
-function IconSparkles(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M12 3v4M12 17v4M5 12H1m22 0h-4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" />
-    </svg>
-  );
-}
-
-function IconMapPin(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z" />
-      <circle cx={12} cy={10} r={2.5} />
-    </svg>
-  );
-}
-
-function IconClock(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <circle cx={12} cy={12} r={8} />
-      <path d="M12 8v4l2.5 1.5" />
-    </svg>
-  );
-}
-
-function IconPhone(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M3 5c0-1.105.895-2 2-2h2.28a1.5 1.5 0 0 1 1.473 1.183l.57 2.566a1.5 1.5 0 0 1-.879 1.686L6.8 9.4a11.042 11.042 0 0 0 7.8 7.8l1.966-1.644a1.5 1.5 0 0 1 1.686-.879l2.566.57A1.5 1.5 0 0 1 22 17.28V19c0 1.105-.895 2-2 2h-.5C9.492 21 3 14.508 3 6.5V5Z" />
-    </svg>
-  );
-}
-
-function IconMail(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <rect height={16} rx={2} width={20} x={2} y={4} />
-      <path d="m3 6 7.889 6.316a2 2 0 0 0 2.222 0L21 6" />
-    </svg>
-  );
-}
-
-function IconArrowRight(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M5 12h14" />
-      <path d="m13 6 6 6-6 6" />
-    </svg>
-  );
-}
-
-function IconCaretDown(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="m6 9 6 6 6-6" />
-    </svg>
-  );
-}
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement | null>(null);
@@ -374,7 +270,7 @@ export default function Home() {
         setActiveSection(nextKey);
         setActiveThemeKey(nextKey);
       },
-      { threshold: [0.3, 0.6, 0.85], rootMargin: "-20% 0px -25%" },
+      { threshold: [0.2, 0.45, 0.7], rootMargin: "-25% 0px -25%" },
     );
 
     sections.forEach((section) => observer.observe(section));
@@ -622,7 +518,7 @@ export default function Home() {
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white text-sm font-bold text-[#2b2014] shadow-inner">
               <span className="sr-only">Verdant Atelier</span>
-              <IconLeaf className="h-5 w-5" />
+              <LeafIcon className="h-5 w-5" />
             </span>
             Verdant Atelier
           </a>
@@ -665,7 +561,7 @@ export default function Home() {
             onClick={() => setIsNavOpen((open) => !open)}
           >
             Menu
-            <IconCaretDown className={`h-4 w-4 transition ${isNavOpen ? "rotate-180" : ""}`} />
+            <ChevronDownIcon className={`h-4 w-4 transition ${isNavOpen ? "rotate-180" : ""}`} />
           </button>
         </nav>
       </header>
@@ -716,6 +612,7 @@ export default function Home() {
         <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center text-white sm:gap-14">
           <div className="flex flex-col items-center gap-4" data-animate>
             <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.45em] text-white/80">
+              <StarIcon className="h-4 w-4 text-white/75" />
               Verdant Atelier
             </span>
             <h1 className="text-[clamp(2.75rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-white">
@@ -732,7 +629,7 @@ export default function Home() {
               className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#1f6f4b] via-[#9d8641] to-[#d9b45f] px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-[#181006] shadow-[0_25px_60px_rgba(174,132,52,0.45)] transition hover:shadow-[0_28px_70px_rgba(174,132,52,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f6e5b2]"
             >
               Explore Our Menu
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" />
             </a>
             <button
               type="button"
@@ -740,7 +637,7 @@ export default function Home() {
               className="group inline-flex items-center gap-3 rounded-full border border-white/35 bg-[#130f0a]/70 px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-white transition hover:bg-[#181208]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
             >
               Reserve an Evening
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" />
             </button>
           </div>
 
@@ -773,20 +670,49 @@ export default function Home() {
               <div className="hero-portal__halo" aria-hidden />
             </div>
 
-            <ul className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3" data-animate="float">
-              {heroHighlights.map((highlight, index) => (
-                <li
-                  key={highlight.title}
-                  className="flex items-start gap-3 rounded-[1.5rem] border border-white/25 bg-white/12 px-4 py-3 text-left text-white/90 backdrop-blur-xl transition hover:bg-white/18"
-                  style={cardParallax(index)}
-                >
-                  <span className="mt-1 h-1.5 w-8 rounded-full bg-gradient-to-r from-white/50 to-white" />
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold uppercase tracking-[0.3em]">{highlight.title}</p>
-                    <p className="text-xs text-white/75">{highlight.description}</p>
-                  </div>
-                </li>
-              ))}
+            <ul className="grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-3" data-animate="float">
+              {heroHighlights.map((highlight, index) => {
+                const SpotlightIcon = highlight.icon;
+
+                return (
+                  <li
+                    key={highlight.title}
+                    className="hero-spotlight-card group"
+                    style={{
+                      ...cardParallax(index),
+                      ...(highlight.accent
+                        ? ({ "--spotlight-accent": highlight.accent } as CSSProperties)
+                        : {}),
+                    }}
+                  >
+                    <div className="hero-spotlight-card__halo" aria-hidden />
+                    <div className="relative flex items-start gap-4">
+                      <div className="hero-spotlight-card__image">
+                        <Image
+                          alt={highlight.title}
+                          src={highlight.image}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 768px) 120px, 96px"
+                        />
+                        <div className="hero-spotlight-card__image-overlay" />
+                      </div>
+                      <div className="flex flex-1 flex-col gap-1.5 text-left">
+                        <span className="inline-flex items-center gap-2 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-white/75">
+                          <SpotlightIcon className="h-4 w-4 text-white/80" />
+                          {highlight.tag}
+                        </span>
+                        <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white">
+                          {highlight.title}
+                        </p>
+                        <p className="text-xs leading-relaxed text-white/70">
+                          {highlight.description}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -809,26 +735,34 @@ export default function Home() {
           </div>
 
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {heroHighlights.map((highlight, index) => (
-              <article
-                key={`${highlight.title}-${index}`}
-                className="group relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/60 p-6 shadow-[0_30px_65px_rgba(30,24,15,0.12)] backdrop-blur-xl"
-                data-animate={index === 0 ? "slide-right" : index === 1 ? "float" : "slide-left"}
-              >
-                <div className="relative mb-5 h-48 overflow-hidden rounded-[1.75rem] border border-white/55">
-                  <Image
-                    alt={highlight.title}
-                    src={highlight.image}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 80vw, 320px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1c150d]/60 via-transparent to-transparent" />
-                </div>
-                <h3 className="relative text-lg font-semibold text-[#1e1a16]">{highlight.title}</h3>
-                <p className="relative mt-2 text-sm text-[#5e533a]">{highlight.description}</p>
-              </article>
-            ))}
+            {heroHighlights.map((highlight, index) => {
+              const SpotlightIcon = highlight.icon;
+
+              return (
+                <article
+                  key={`${highlight.title}-${index}`}
+                  className="group relative overflow-hidden rounded-[2rem] border border-white/55 bg-white/65 p-6 shadow-[0_35px_70px_rgba(30,24,15,0.14)] backdrop-blur-2xl"
+                  data-animate={index === 0 ? "slide-right" : index === 1 ? "float" : "slide-left"}
+                >
+                  <div className="relative mb-5 overflow-hidden rounded-[1.75rem] border border-white/60">
+                    <Image
+                      alt={highlight.title}
+                      src={highlight.image}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 80vw, 360px"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1c150d]/65 via-transparent to-transparent" />
+                    <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#5a4c32] shadow-lg">
+                      <SpotlightIcon className="h-4 w-4 text-[#b28738]" />
+                      {highlight.tag}
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-[#1e1a16]">{highlight.title}</h3>
+                  <p className="mt-3 text-sm text-[#5e533a]">{highlight.description}</p>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -842,7 +776,7 @@ export default function Home() {
           <div className="space-y-6" data-animate="slide-right">
             <div className="flex items-center gap-3">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c4b48d]/30 bg-[#f0e6d0]/70">
-                <IconSparkles className="h-4 w-4 text-[#8a7a54]" />
+                <SparklesIcon className="h-4 w-4 text-[#8a7a54]" />
               </span>
               <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#867751]">Our Promise</p>
             </div>
@@ -919,7 +853,9 @@ export default function Home() {
       >
         <div className="grid gap-10 rounded-[2.75rem] border border-white/65 bg-white/70 p-8 shadow-[0_50px_110px_rgba(24,18,12,0.2)] backdrop-blur-2xl lg:grid-cols-[0.9fr_1.1fr] lg:p-12" data-animate>
           <div className="space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#867751]">Contact</p>
+            <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.4em] text-[#867751]">
+              <SparklesIcon className="h-4 w-4 text-[#b28738]" /> Contact
+            </p>
             <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">Reserve an intimate seating</h2>
             <p className="text-sm text-[#5c5137]">
               Share your occasion and our hospitality team will create a tailored tasting with curated wine pairings and ambient design.
@@ -937,14 +873,14 @@ export default function Home() {
                 </p>
               ))}
               <a className="group inline-flex items-center gap-2 text-[#405e36] transition hover:text-[#2a4126]" href="tel:+12075550123">
-                <IconPhone className="h-4 w-4" />
+                <PhoneIcon className="h-4 w-4" />
                 +1 (207) 555-0123
-                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+                <ArrowRightIcon className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
               </a>
               <a className="group inline-flex items-center gap-2 text-[#405e36] transition hover:text-[#2a4126]" href="mailto:hello@verdantatelier.com">
-                <IconMail className="h-4 w-4" />
+                <MailIcon className="h-4 w-4" />
                 hello@verdantatelier.com
-                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+                <ArrowRightIcon className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
               </a>
             </div>
             <button
@@ -953,7 +889,7 @@ export default function Home() {
               onClick={() => setIsModalOpen(true)}
             >
               Reserve a Table
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+              <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-0.5" />
             </button>
           </div>
           <form className="grid gap-4 text-sm text-[#5c5137]" data-animate="slide-left">
@@ -1002,66 +938,120 @@ export default function Home() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative z-10 w-full max-w-lg rounded-[2.5rem] border border-white/25 bg-white/85 p-8 text-[#1e1a16] shadow-[0_40px_110px_rgba(18,16,13,0.45)] backdrop-blur-2xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold uppercase tracking-[0.4em] text-[#3b5b34]">Reserve Table</h3>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-full border border-transparent px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-[#6d6859] transition hover:border-[#d6c9a4] hover:bg-white/70"
-              >
-                Close
-              </button>
-            </div>
-            <form className="mt-6 grid gap-4 text-sm text-[#5c5137]">
-              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
-                Name
-                <input
-                  className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
-                  placeholder="Your name"
-                  type="text"
-                />
-              </label>
-              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
-                Email
-                <input
-                  className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
-                  placeholder="Email address"
-                  type="email"
-                />
-              </label>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
-                  Date
-                  <input
-                    className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
-                    type="date"
-                  />
-                </label>
-                <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
-                  Guests
-                  <input
-                    className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
-                    type="number"
-                    min={1}
-                  />
-                </label>
+          <div className="relative z-10 w-full max-w-xl overflow-hidden rounded-[2.75rem] border border-white/30 bg-white/90 text-[#1e1a16] shadow-[0_45px_120px_rgba(18,16,13,0.5)] backdrop-blur-2xl">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#f7f0de]/95 via-white/92 to-[#efe1c8]/90" aria-hidden />
+            <div className="absolute -left-1/3 -top-1/3 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(217,170,84,0.25),transparent_65%)] blur-3xl" aria-hidden />
+            <div className="absolute -right-1/4 bottom-0 h-48 w-48 rounded-full bg-[radial-gradient(circle,rgba(110,176,137,0.28),transparent_70%)] blur-3xl" aria-hidden />
+            <div className="relative z-10 p-8 sm:p-10">
+              <div className="flex flex-col gap-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="space-y-3">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-white/85 px-4 py-2 text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-[#7a6238] shadow-sm">
+                      <SparklesIcon className="h-4 w-4 text-[#b28738]" />
+                      Reserve
+                    </span>
+                    <div className="space-y-2">
+                      <h3 id="reservation-title" className="text-2xl font-semibold leading-snug text-[#1f160c]">
+                        Reserve your tasting
+                      </h3>
+                      <p className="text-sm text-[#5c5137]">
+                        Select your evening and our concierge will confirm your bespoke menu pairing within the hour.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-[#e5d6b8] bg-white/80 text-[#6d5a3a] transition hover:bg-white"
+                    aria-label="Close reservation modal"
+                  >
+                    <CloseIcon className="h-4 w-4 transition group-hover:rotate-90" />
+                  </button>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="flex items-start gap-3 rounded-2xl border border-white/55 bg-white/80 px-4 py-3 shadow-sm">
+                    <LeafIcon className="mt-0.5 h-5 w-5 text-[#3b5b34]" />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#897047]">Seasonal Pairing</p>
+                      <p className="text-sm text-[#5c5137]">Garden-to-table courses in peak season.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3 rounded-2xl border border-white/55 bg-white/80 px-4 py-3 shadow-sm">
+                    <ClockIcon className="mt-0.5 h-5 w-5 text-[#b28738]" />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.32em] text-[#897047]">Evening cadence</p>
+                      <p className="text-sm text-[#5c5137]">Eight courses · 2.5 hour dining journey.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <form aria-labelledby="reservation-title" className="grid gap-4 text-sm text-[#5c5137]">
+                  <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                    Name
+                    <input
+                      className="h-11 rounded-full border border-[#d6c9a4]/70 bg-white/90 px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                      placeholder="Your name"
+                      type="text"
+                    />
+                  </label>
+                  <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                    Email
+                    <input
+                      className="h-11 rounded-full border border-[#d6c9a4]/70 bg-white/90 px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                      placeholder="Email address"
+                      type="email"
+                    />
+                  </label>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                      Date
+                      <input
+                        className="h-11 rounded-full border border-[#d6c9a4]/70 bg-white/90 px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                        type="date"
+                      />
+                    </label>
+                    <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                      Guests
+                      <input
+                        className="h-11 rounded-full border border-[#d6c9a4]/70 bg-white/90 px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                        type="number"
+                        min={1}
+                        placeholder="2"
+                      />
+                    </label>
+                  </div>
+                  <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                    Occasion
+                    <input
+                      className="h-11 rounded-full border border-[#d6c9a4]/70 bg-white/90 px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                      placeholder="Celebration, anniversary, chef's table"
+                      type="text"
+                    />
+                  </label>
+                  <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                    Notes
+                    <textarea
+                      rows={4}
+                      className="rounded-3xl border border-[#d6c9a4]/70 bg-white/90 px-4 py-3 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#3b5b34] focus:outline-none focus:ring-2 focus:ring-[#d5bb62]/60"
+                      placeholder="Share dietary notes, arrival time, or preferred sommelier pairings"
+                    />
+                  </label>
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <p className="text-xs text-[#867751]">
+                      We reply within 30 minutes during service hours.
+                    </p>
+                    <button
+                      type="submit"
+                      className="inline-flex items-center gap-2 rounded-full border border-[#ffe7b8]/60 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_20px_55px_rgba(167,142,70,0.45)] transition hover:shadow-[0_25px_65px_rgba(167,142,70,0.55)]"
+                    >
+                      Confirm Reservation
+                      <ArrowRightIcon className="h-4 w-4" />
+                    </button>
+                  </div>
+                </form>
               </div>
-              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
-                Notes
-                <textarea
-                  rows={4}
-                  className="rounded-3xl border border-[#d6c9a4]/60 bg-white px-4 py-3 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
-                  placeholder="Share celebration details or dietary notes"
-                />
-              </label>
-              <button
-                type="submit"
-                className="mt-2 inline-flex items-center justify-center rounded-full border border-[#ffe7b8]/50 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_20px_55px_rgba(167,142,70,0.45)] transition hover:shadow-[0_25px_65px_rgba(167,142,70,0.55)]"
-              >
-                Confirm Reservation
-              </button>
-            </form>
+            </div>
           </div>
         </div>
       )}
