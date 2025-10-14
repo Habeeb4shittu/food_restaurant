@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 
@@ -210,6 +210,201 @@ function IconArrowRight(props: IconProps) {
   );
 }
 
+function RotatingDonut() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const canvas = canvasRef.current;
+    if (!container || !canvas) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    const sprinkleColors = ["#ffc857", "#6bdad5", "#ff90b3", "#ffffff", "#c8f26a", "#ff8fab"];
+    const glazePalette = ["#fff1f7", "#ffe0ef", "#ffc9dd", "#ffb3ce", "#ff9bc0", "#ff86b1", "#f86f9d"];
+
+    const sprinkles = Array.from({ length: 85 }, (_, index) => ({
+      theta: Math.random() * Math.PI * 2,
+      phi: Math.random() * Math.PI * 2,
+      wobble: Math.random() * 0.4 + 0.4,
+      color: sprinkleColors[index % sprinkleColors.length],
+    }));
+
+    let width = 0;
+    let height = 0;
+    const dpr = window.devicePixelRatio || 1;
+
+    const resizeCanvas = () => {
+      const rect = container.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      context.setTransform(1, 0, 0, 1, 0, 0);
+      context.scale(dpr, dpr);
+    };
+
+    resizeCanvas();
+
+    let animationFrame = 0;
+    let bufferWidth = 0;
+    let bufferHeight = 0;
+    let depthBuffer = new Float32Array(0);
+
+    const ensureBuffer = () => {
+      const w = Math.max(1, Math.floor(width));
+      const h = Math.max(1, Math.floor(height));
+      if (w !== bufferWidth || h !== bufferHeight) {
+        bufferWidth = w;
+        bufferHeight = h;
+        depthBuffer = new Float32Array(w * h);
+      } else {
+        depthBuffer.fill(0);
+      }
+    };
+
+    let angleA = 0;
+    let angleB = 0;
+
+    const render = () => {
+      animationFrame = requestAnimationFrame(render);
+      if (width <= 0 || height <= 0) {
+        return;
+      }
+
+      ensureBuffer();
+
+      context.clearRect(0, 0, width, height);
+      const cosA = Math.cos(angleA);
+      const sinA = Math.sin(angleA);
+      const cosB = Math.cos(angleB);
+      const sinB = Math.sin(angleB);
+
+      const R1 = 1.08;
+      const R2 = 2.7;
+      const K2 = 7;
+      const K1 = 130;
+
+      for (let theta = 0; theta < Math.PI * 2; theta += 0.21) {
+        const cosTheta = Math.cos(theta);
+        const sinTheta = Math.sin(theta);
+        for (let phi = 0; phi < Math.PI * 2; phi += 0.07) {
+          const cosPhi = Math.cos(phi);
+          const sinPhi = Math.sin(phi);
+
+          const circleX = R2 + R1 * cosTheta;
+          const circleY = R1 * sinTheta;
+
+          const x = circleX * (cosB * cosPhi + sinA * sinB * sinPhi) - circleY * cosA * sinB;
+          const y = circleX * (sinB * cosPhi - sinA * cosB * sinPhi) + circleY * cosA * cosB;
+          const z = cosA * circleX * sinPhi + circleY * sinA;
+
+          const ooz = 1 / (z + K2);
+          const xp = Math.floor(width / 2 + K1 * ooz * x);
+          const yp = Math.floor(height / 2 - K1 * ooz * y);
+
+          if (xp < 0 || xp >= bufferWidth || yp < 0 || yp >= bufferHeight) {
+            continue;
+          }
+
+          const bufferIndex = xp + bufferWidth * yp;
+          if (ooz <= depthBuffer[bufferIndex]) {
+            continue;
+          }
+
+          depthBuffer[bufferIndex] = ooz;
+
+          const luminance =
+            cosPhi * cosTheta * sinB -
+            cosA * cosTheta * sinPhi -
+            sinA * sinTheta +
+            cosB * (cosA * sinTheta - cosTheta * sinA * sinPhi);
+
+          const normalized = Math.min(1, Math.max(0, (luminance + 1.8) / 3.4));
+          const colorIndex = Math.min(glazePalette.length - 1, Math.floor(normalized * glazePalette.length));
+          const fillColor = glazePalette[colorIndex];
+
+          context.globalAlpha = 0.92;
+          context.fillStyle = fillColor;
+          context.fillRect(xp, yp, 3.1, 3.1);
+        }
+      }
+
+      context.globalAlpha = 1;
+
+      sprinkles.forEach((sprinkle) => {
+        const theta = sprinkle.theta + angleA * 0.7;
+        const phi = sprinkle.phi + angleB * 0.7;
+        const cosTheta = Math.cos(theta);
+        const sinTheta = Math.sin(theta);
+        const cosPhi = Math.cos(phi);
+        const sinPhi = Math.sin(phi);
+
+        const circleX = R2 + R1 * cosTheta;
+        const circleY = R1 * sinTheta;
+
+        const x = circleX * (cosB * cosPhi + sinA * sinB * sinPhi) - circleY * cosA * sinB;
+        const y = circleX * (sinB * cosPhi - sinA * cosB * sinPhi) + circleY * cosA * cosB;
+        const z = cosA * circleX * sinPhi + circleY * sinA;
+
+        const ooz = 1 / (z + K2);
+        const xp = width / 2 + K1 * ooz * x;
+        const yp = height / 2 - K1 * ooz * y;
+
+        if (xp < -20 || xp > width + 20 || yp < -20 || yp > height + 20) {
+          return;
+        }
+
+        const sprinkleSize = Math.max(1.5, 4.4 * ooz * 90 * sprinkle.wobble);
+        context.save();
+        context.translate(xp, yp);
+        context.rotate(phi + theta);
+        context.fillStyle = sprinkle.color;
+        context.globalAlpha = 0.88;
+        context.fillRect(-sprinkleSize / 2, -sprinkleSize / 6, sprinkleSize, sprinkleSize / 3);
+        context.restore();
+      });
+
+      context.globalAlpha = 1;
+
+      angleA += 0.012;
+      angleB += 0.018;
+    };
+
+    render();
+
+    const handleResize = () => {
+      resizeCanvas();
+      ensureBuffer();
+    };
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(handleResize);
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener("resize", handleResize);
+    }
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", handleResize);
+      }
+    };
+  }, []);
+
+  return (
+    <div aria-hidden className="h-full w-full" ref={containerRef}>
+      <canvas className="h-full w-full" ref={canvasRef} />
+    </div>
+  );
+}
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -367,10 +562,10 @@ export default function Home() {
           poster="https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1600&q=60"
           src="https://cdn.coverr.co/videos/coverr-gourmet-chef-plating-a-fine-dining-dish-7321/1080p.mp4"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#0f140d]/30 via-[#11170f]/15 to-white/10" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#fff7ef]/60 via-[#f2fff4]/35 to-white/20" />
 
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
-          <div className="grid gap-12 text-white lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
+          <div className="grid gap-12 text-white lg:grid-cols-[1.15fr_0.9fr] lg:items-end">
             <div className="space-y-8" data-animate>
               <p className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-white/80">
                 <IconSparkles className="h-4 w-4" />
@@ -398,21 +593,36 @@ export default function Home() {
               </form>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1" data-animate="slide-left">
-              {heroHighlights.map((highlight) => (
-                <article
-                  key={highlight.title}
-                  className="flex items-center gap-4 rounded-3xl border border-white/25 bg-white/25 p-4 text-left shadow-[0_24px_60px_rgba(15,19,12,0.25)] backdrop-blur-2xl transition hover:-translate-y-1"
-                >
-                  <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[24px] border border-white/40 bg-white/30">
-                    <Image alt={highlight.title} fill className="object-cover" src={highlight.image} sizes="80px" />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-base font-semibold text-white">{highlight.title}</h3>
-                    <p className="text-xs text-white/75">{highlight.description}</p>
-                  </div>
-                </article>
-              ))}
+            <div className="flex flex-col gap-6" data-animate="slide-left">
+              <div className="relative overflow-hidden rounded-[42px] border border-white/25 bg-white/20 p-6 shadow-[0_32px_90px_rgba(16,20,14,0.35)] backdrop-blur-3xl">
+                <div className="pointer-events-none absolute inset-0 rounded-[42px] bg-gradient-to-br from-white/20 via-transparent to-white/10" />
+                <div className="relative mx-auto h-[220px] w-full max-w-[360px] sm:h-[260px]">
+                  <RotatingDonut />
+                </div>
+                <div className="mt-6 space-y-2 text-center">
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/70">House-made artistry</p>
+                  <p className="text-sm text-white/80">
+                    Every dessert is hand-finished with playful textures and botanical glazes straight from our pastry lab.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+                {heroHighlights.map((highlight) => (
+                  <article
+                    key={highlight.title}
+                    className="flex items-center gap-4 rounded-3xl border border-white/25 bg-white/25 p-4 text-left shadow-[0_24px_60px_rgba(15,19,12,0.25)] backdrop-blur-2xl transition hover:-translate-y-1"
+                  >
+                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[24px] border border-white/40 bg-white/30">
+                      <Image alt={highlight.title} fill className="object-cover" src={highlight.image} sizes="80px" />
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="text-base font-semibold text-white">{highlight.title}</h3>
+                      <p className="text-xs text-white/75">{highlight.description}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
           </div>
         </div>
