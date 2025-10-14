@@ -3,7 +3,7 @@ import type { RefObject } from "react";
 import type { MissionDetail } from "./types";
 
 type MissionSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
+  sectionRef: React.RefObject<HTMLDivElement | null>;
   details: MissionDetail[];
 };
 

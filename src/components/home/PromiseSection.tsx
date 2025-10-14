@@ -1,10 +1,9 @@
 import Image from "next/image";
-import type { RefObject } from "react";
 
 import { SparklesIcon } from "../icons";
 
 type PromiseSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
+  sectionRef: React.RefObject<HTMLDivElement | null>;
   highlights: string[];
 };
 

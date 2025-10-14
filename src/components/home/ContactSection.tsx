@@ -9,7 +9,7 @@ type ContactCtas = {
 };
 
 type ContactSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
+  sectionRef: React.RefObject<HTMLDivElement | null>;
   contactDetails: ContactDetail[];
   contactCtas: ContactCtas;
   onReserve: () => void;

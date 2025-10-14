@@ -12,7 +12,7 @@ const HERO_PRIMARY_COPY = {
 };
 
 type HeroSectionProps = {
-  sectionRef: RefObject<HTMLDivElement>;
+  sectionRef: React.RefObject<HTMLDivElement | null>;
   highlights: HeroHighlight[];
   parallaxStyle: CSSProperties;
   glowParallax: (multiplier: number, depth: number) => CSSProperties;
@@ -103,7 +103,7 @@ export function HeroSection({
             <div className="hero-portal__halo" aria-hidden />
           </div>
 
-          <div className="w-full rounded-[2.5rem] border border-white/35 bg-white/10 p-6 shadow-[0_35px_90px_rgba(0,0,0,0.3)] backdrop-blur-3xl" data-animate="float">
+          <div className="w-full rounded-[2.5rem] pb-10 border border-white/35 bg-white/10 p-6 shadow-[0_35px_90px_rgba(0,0,0,0.3)] backdrop-blur-3xl" data-animate="float">
             <div className="flex items-center justify-between gap-4 pb-4 text-left text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/80">
               <span className="inline-flex items-center gap-2">
                 <SparklesIcon className="h-4 w-4 text-white/75" /> Spotlight Courses
