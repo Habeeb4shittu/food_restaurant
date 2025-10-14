@@ -1,0 +1,51 @@
+<svg width="500" height="500" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="500" height="500" rx="60" fill="url(#paint0_radial_ring)" />
+  <g filter="url(#filter0_f_ring)">
+    <circle cx="250" cy="250" r="170" fill="#dfe8d5" />
+  </g>
+  <g filter="url(#filter1_di_ring)">
+    <circle cx="250" cy="250" r="150" fill="url(#paint1_radial_ring)" />
+    <circle cx="250" cy="250" r="94" fill="url(#paint2_radial_ring)" />
+    <circle cx="250" cy="250" r="70" fill="url(#paint3_radial_ring)" />
+  </g>
+  <path d="M393.5 214.8C403.9 247.3 393.5 287.7 368.3 322.2C342.9 356.9 302.5 385.3 257.9 392.5C213.1 399.9 165.2 385.5 131.2 358.5C96.9 331.6 76.4 292.5 81.3 253.5C86.4 214.3 116.8 175.2 155.6 147C194.5 118.8 241.7 101.4 280.8 111.5C319.8 121.5 350.7 159.3 371.4 187.9C382.1 202.8 388.4 206.7 393.5 214.8Z" fill="url(#paint4_radial_ring)" />
+  <path d="M351.2 174.5C365.8 189.3 371 215.4 366.5 239.7C362.1 264 347.7 286.5 328.9 302.7C309.8 319.1 286.3 329.2 262.6 330.7C238.7 332.2 214.7 325.3 196.3 310.2C178 295.1 165.3 272.1 164 248.2C162.7 224.5 173 199.9 191.2 182.4C209.3 164.8 235.3 154.3 261 154.9C286.6 155.5 312.2 166 331.2 181.1C340.9 189.1 345.9 190 351.2 174.5Z" fill="url(#paint5_radial_ring)" />
+  <defs>
+    <radialGradient id="paint0_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(120 70) rotate(40) scale(480 380)">
+      <stop stop-color="#f3f5ee" />
+      <stop offset="1" stop-color="#dce9dc" />
+    </radialGradient>
+    <filter id="filter0_f_ring" x="30" y="30" width="440" height="440" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="20" />
+    </filter>
+    <filter id="filter1_di_ring" x="70" y="70" width="360" height="360" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+      <feOffset dy="10" />
+      <feGaussianBlur stdDeviation="12" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.231373 0 0 0 0 0.298039 0 0 0 0 0.180392 0 0 0 0.25 0" />
+      <feBlend mode="normal" in2="shape" result="effect1_innerShadow_ring" />
+    </filter>
+    <radialGradient id="paint1_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(200 160) rotate(60) scale(210)">
+      <stop stop-color="#3f5932" />
+      <stop offset="1" stop-color="#1d2c17" />
+    </radialGradient>
+    <radialGradient id="paint2_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(230 180) rotate(60) scale(140)">
+      <stop stop-color="#6f8f4d" />
+      <stop offset="1" stop-color="#2f431e" />
+    </radialGradient>
+    <radialGradient id="paint3_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(265 195) rotate(60) scale(110)">
+      <stop stop-color="#b3cf7a" />
+      <stop offset="1" stop-color="#48692a" />
+    </radialGradient>
+    <radialGradient id="paint4_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(262 255) rotate(90) scale(170 180)">
+      <stop stop-color="#3f5c30" stop-opacity="0.8" />
+      <stop offset="1" stop-color="#22321b" stop-opacity="0.1" />
+    </radialGradient>
+    <radialGradient id="paint5_radial_ring" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(264 242) rotate(90) scale(120 120)">
+      <stop stop-color="#c4de8a" stop-opacity="0.95" />
+      <stop offset="1" stop-color="#4b6f30" stop-opacity="0.2" />
+    </radialGradient>
+  </defs>
+</svg>
