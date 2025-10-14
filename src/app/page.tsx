@@ -306,9 +306,9 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-[#eef0ec] text-[#16140f]">
       <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-6 sm:px-8">
-        <nav className="pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-white/50 bg-white/30 px-6 py-4 text-xs font-semibold uppercase tracking-[0.32em] text-white shadow-[0_20px_60px_rgba(20,27,18,0.28)] backdrop-blur-2xl">
+        <nav className="pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-[#e4e1d5] bg-white/90 px-6 py-4 text-xs font-semibold uppercase tracking-[0.32em] text-[#2b2a24] shadow-[0_20px_60px_rgba(20,27,18,0.28)] backdrop-blur-2xl">
           <a
-            className="flex items-center gap-2 text-sm tracking-[0.4em] text-white transition hover:text-white/80"
+            className="flex items-center gap-2 text-sm tracking-[0.4em] text-[#1f1c16] transition-colors hover:text-[#2f6337]"
             href="#hero"
           >
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-base font-bold text-[#1f1c16] shadow-inner">
@@ -323,10 +323,10 @@ export default function Home() {
                 <a
                   key={link.id}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
+                  className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${
                     isActive
-                      ? "border-white/80 bg-white/40 text-[#1f1c16] shadow-sm"
-                      : "border-white/40 text-white/85 hover:-translate-y-0.5 hover:border-white/70 hover:text-white"
+                      ? "border-[#d7d2c4] bg-white text-[#1f1c16] shadow-sm"
+                      : "border-transparent text-[#474335] hover:-translate-y-0.5 hover:border-[#d7d2c4] hover:bg-white/90 hover:text-[#1f1c16]"
                   }`}
                   href={`#${link.id}`}
                 >
@@ -335,7 +335,7 @@ export default function Home() {
               );
             })}
             <button
-              className="group flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-2 text-[11px] tracking-[0.4em] text-[#1f1c16] transition hover:-translate-y-0.5 hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="group flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-2 text-[11px] tracking-[0.4em] text-[#1f1c16] transition hover:-translate-y-0.5 hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={handleReserveClick}
               type="button"
             >
@@ -346,12 +346,12 @@ export default function Home() {
           <button
             aria-controls="mobile-nav"
             aria-expanded={isNavOpen}
-            className="flex cursor-pointer flex-col items-end gap-1 text-[10px] font-normal tracking-[0.45em] text-white/80 transition hover:text-white sm:hidden"
+            className="flex cursor-pointer flex-col items-end gap-1 text-[10px] font-normal tracking-[0.45em] text-[#2b2a24] transition-colors hover:text-[#2f6337] sm:hidden"
             onClick={() => setIsNavOpen((prev) => !prev)}
             type="button"
           >
             Menu
-            <span className="h-px w-6 bg-white/70" />
+            <span className="h-px w-6 bg-[#2b2a24]" />
           </button>
         </nav>
       </header>
@@ -384,12 +384,12 @@ export default function Home() {
               </p>
               <form className="flex flex-col gap-3 sm:flex-row" data-animate="slide-right">
                 <input
-                  className="h-12 flex-1 rounded-full border border-white/35 bg-white/30 px-5 text-sm text-white placeholder:text-white/70 focus:border-white focus:outline-none"
+                  className="h-12 flex-1 rounded-full border border-white/80 bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#6d6859] focus:border-[#8ac27d] focus:outline-none focus:ring-2 focus:ring-[#8ac27d]/40"
                   placeholder="Enter your email for supper club updates"
                   type="email"
                 />
                 <button
-                  className="group flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="group flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
                   type="submit"
                 >
                   Request Invite
