@@ -28,7 +28,8 @@ html {
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top left, rgba(234, 241, 230, 0.9), rgba(226, 232, 219, 0.7)) fixed,
+  background: radial-gradient(circle at top left, rgba(234, 241, 230, 0.9), rgba(226, 232, 219, 0.7))
+      fixed,
     var(--background);
   color: var(--foreground);
   font-family: var(--font-body);

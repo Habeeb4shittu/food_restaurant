@@ -254,8 +254,9 @@ export default function Home() {
   }, []);
 
   const getParallaxStyle = (intensity: number, offsetY = 0) => ({
-    transform: `translate3d(${parallaxOffset.x * intensity}px, ${parallaxOffset.y * intensity + scrollDepth * intensity * 40 + offsetY
-      }px, 0)`,
+    transform: `translate3d(${parallaxOffset.x * intensity}px, ${
+      parallaxOffset.y * intensity + scrollDepth * intensity * 40 + offsetY
+    }px, 0)`,
   });
 
   useEffect(() => {
@@ -366,10 +367,11 @@ export default function Home() {
                 <a
                   key={link.id}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${isActive
-                    ? "border-[#d7d2c4] bg-white text-[#1f1c16] shadow-sm"
-                    : "border-transparent text-[#474335] hover:-translate-y-0.5 hover:border-[#d7d2c4] hover:bg-white/90 hover:text-[#1f1c16]"
-                    }`}
+                  className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${
+                    isActive
+                      ? "border-[#d7d2c4] bg-white text-[#1f1c16] shadow-sm"
+                      : "border-transparent text-[#474335] hover:-translate-y-0.5 hover:border-[#d7d2c4] hover:bg-white/90 hover:text-[#1f1c16]"
+                  }`}
                   href={`#${link.id}`}
                 >
                   {link.label}
@@ -377,7 +379,7 @@ export default function Home() {
               );
             })}
             <button
-              className="group flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-2 text-[11px] tracking-[0.4em] text-[#1f1c16] transition hover:-translate-y-0.5 hover:bg-[#76b169] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="group flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-2 text-[11px] tracking-[0.4em] text-[#1f1c16] transition hover:-translate-y-0.5 hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={handleReserveClick}
               type="button"
             >
@@ -454,7 +456,7 @@ export default function Home() {
 
           <div className="flex flex-col items-center gap-3 sm:flex-row" data-animate="slide-left">
             <a
-              className="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden rounded-full border border-white/25 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white shadow-[0_28px_80px_rgba(10,8,5,0.55)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d6a651]"
+              className="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden rounded-full border border-white/25 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white shadow-[0_28px_80px_rgba(10,8,5,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d6a651]"
               href="#highlights"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-[#2f6f4f] via-[#3f845c] to-[#d7a74d] opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
@@ -464,7 +466,7 @@ export default function Home() {
               </span>
             </a>
             <button
-              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white/80 transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white/80 transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
               onClick={handleReserveClick}
               type="button"
             >
@@ -636,7 +638,7 @@ export default function Home() {
               </a>
             </div>
             <button
-              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={handleReserveClick}
               type="button"
             >
@@ -707,7 +709,7 @@ export default function Home() {
               />
             </div>
             <button
-              className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               type="submit"
             >
               Send Message
@@ -769,7 +771,7 @@ export default function Home() {
             </p>
             <button
               aria-label="Close navigation"
-              className="cursor-pointer text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="cursor-pointer text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={() => setIsNavOpen(false)}
               type="button"
             >
@@ -783,10 +785,11 @@ export default function Home() {
                 <a
                   key={`mobile-${link.id}`}
                   aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full px-4 py-3 text-center transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${isActive
-                    ? "bg-[#8ac27d]/40 text-[#2f6337]"
-                    : "bg-[#eef3ea] text-[#2f6337] hover:bg-[#dcebd5]"
-                    }`}
+                  className={`rounded-full px-4 py-3 text-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${
+                    isActive
+                      ? "bg-[#8ac27d]/40 text-[#2f6337]"
+                      : "bg-[#eef3ea] text-[#2f6337] hover:bg-[#dcebd5]"
+                  }`}
                   href={`#${link.id}`}
                   onClick={handleNavLinkClick}
                 >
@@ -795,7 +798,7 @@ export default function Home() {
               );
             })}
             <button
-              className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#8ac27d] px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#8ac27d] px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={handleReserveClick}
               type="button"
             >
@@ -811,7 +814,7 @@ export default function Home() {
           <div className="relative w-full max-w-lg rounded-[32px] border border-white/40 bg-white/95 p-8 text-[#1f1c16] shadow-[0_40px_80px_rgba(18,24,15,0.35)] backdrop-blur-2xl">
             <button
               aria-label="Close reservation form"
-              className="absolute right-6 top-6 cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+              className="absolute right-6 top-6 cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
               onClick={() => setIsModalOpen(false)}
               type="button"
             >
@@ -886,7 +889,7 @@ export default function Home() {
                 />
               </div>
               <button
-                className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
+                className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
                 type="submit"
               >
                 Submit Request
