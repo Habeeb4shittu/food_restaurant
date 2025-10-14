@@ -36,6 +36,39 @@ const pillars = [
   },
 ];
 
+const heroHighlights = [
+  {
+    title: "Seasonal Chef’s Tasting",
+    description: "Six courses inspired by the harvest with thoughtful wine pairings.",
+    image: "/images/tasting-menu.svg",
+  },
+  {
+    title: "Wood-Fired Evenings",
+    description: "Rustic pizzas and charred vegetables finished with herb oil.",
+    image: "/images/wood-fired.svg",
+  },
+  {
+    title: "Garden Brunch",
+    description: "Fresh-pressed juices, sourdough waffles, and housemade preserves.",
+    image: "/images/brunch-circle.svg",
+  },
+];
+
+const pillars = [
+  {
+    title: "Local Producers",
+    copy: "We partner with nearby farms for greens, cheeses, and sustainable proteins harvested at peak flavor.",
+  },
+  {
+    title: "Slow Crafted",
+    copy: "Ferments, broths, and breads are nurtured in-house to coax depth from simple ingredients.",
+  },
+  {
+    title: "Gather Together",
+    copy: "Dining rooms designed for long conversations, celebratory toasts, and everyday comfort.",
+  },
+];
+
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
