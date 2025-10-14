@@ -28,9 +28,7 @@ html {
 
 body {
   margin: 0;
-  background: radial-gradient(circle at top left, rgba(234, 241, 230, 0.9), rgba(226, 232, 219, 0.7))
-      fixed,
-    var(--background);
+  background: #f5efe2;
   color: var(--foreground);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -73,4 +71,66 @@ body {
 
 [data-animate="float"].is-visible {
   transform: translateY(0) scale(1);
+}
+
+.hero-portal {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 22rem);
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 228, 190, 0.35);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 248, 230, 0.2), transparent 60%),
+    rgba(20, 14, 8, 0.25);
+  box-shadow: 0 45px 90px rgba(20, 14, 8, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.hero-portal__halo {
+  position: absolute;
+  inset: -15%;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255, 206, 150, 0.5) 0%, rgba(255, 239, 208, 0.25) 40%, transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hero-glow {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.hero-glow--one {
+  width: 18rem;
+  height: 18rem;
+  top: -5rem;
+  right: 6%;
+  background: radial-gradient(circle, rgba(255, 206, 150, 0.45) 0%, rgba(255, 206, 150, 0.08) 65%, transparent 95%);
+}
+
+.hero-glow--two {
+  width: 14rem;
+  height: 14rem;
+  bottom: -4rem;
+  left: 8%;
+  background: radial-gradient(circle, rgba(110, 176, 137, 0.4) 0%, rgba(110, 176, 137, 0.08) 60%, transparent 100%);
+}
+
+@media (max-width: 640px) {
+  .hero-portal {
+    width: min(100%, 18rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow,
+  .hero-portal {
+    transform: none !important;
+  }
 }

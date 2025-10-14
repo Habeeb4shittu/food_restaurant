@@ -1,11 +1,28 @@
 "use client";
 
+// Swap background video sources or poster images inside `backgroundConfigs` below.
+
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type SectionKey = "hero" | "highlights" | "promise" | "mission" | "contact";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
+
+type BackgroundConfig =
+  | {
+      kind: "video";
+      src: string;
+      poster: string;
+      overlay?: string;
+      fallbackGradient: string;
+    }
+  | {
+      kind: "gradient";
+      gradient: string;
+      texture?: string;
+      overlay?: string;
+    };
 
 const navLinks: { id: SectionKey; label: string }[] = [
   { id: "hero", label: "Home" },
@@ -14,37 +31,47 @@ const navLinks: { id: SectionKey; label: string }[] = [
   { id: "mission", label: "Mission" },
   { id: "contact", label: "Contact" },
 ];
-
-const backgroundThemes: Record<SectionKey, { gradient: string; vignette: string }> = {
+const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   hero: {
-    gradient:
+    kind: "video",
+    src: "https://cdn.coverr.co/videos/coverr-gourmet-chef-plating-a-fine-dining-dish-7321/1080p.mp4",
+    poster: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80",
+    overlay:
+      "linear-gradient(180deg, rgba(10, 8, 4, 0.45) 0%, rgba(12, 9, 5, 0.2) 45%, rgba(16, 12, 6, 0.05) 100%)",
+    fallbackGradient:
       "radial-gradient(120% 120% at 20% 20%, rgba(253, 249, 241, 0.95) 0%, rgba(242, 233, 219, 0.94) 45%, rgba(211, 204, 190, 0.92) 100%)",
-    vignette:
-      "radial-gradient(circle at 80% 80%, rgba(52, 41, 24, 0.25), transparent 55%), radial-gradient(circle at 10% 10%, rgba(184, 167, 120, 0.22), transparent 60%)",
   },
   highlights: {
+    kind: "gradient",
     gradient:
-      "radial-gradient(125% 125% at 30% 10%, rgba(248, 245, 238, 0.96), rgba(232, 223, 206, 0.94) 48%, rgba(188, 178, 151, 0.92) 100%)",
-    vignette:
-      "radial-gradient(circle at 90% 20%, rgba(90, 69, 38, 0.28), transparent 58%), radial-gradient(circle at 10% 80%, rgba(166, 134, 82, 0.24), transparent 55%)",
+      "radial-gradient(120% 140% at 30% 15%, rgba(251, 244, 234, 0.96) 0%, rgba(232, 218, 196, 0.94) 45%, rgba(196, 176, 141, 0.9) 100%)",
+    texture:
+      "radial-gradient(circle at 80% 20%, rgba(120, 89, 45, 0.22), transparent 55%), radial-gradient(circle at 10% 85%, rgba(209, 170, 104, 0.2), transparent 60%)",
   },
   promise: {
-    gradient:
+    kind: "video",
+    src: "https://cdn.coverr.co/videos/coverr-slow-motion-pour-of-olive-oil-into-bowl-5598/1080p.mp4",
+    poster: "https://images.unsplash.com/photo-1446611720526-39d16597055e?auto=format&fit=crop&w=1600&q=80",
+    overlay:
+      "linear-gradient(180deg, rgba(22, 16, 8, 0.5) 0%, rgba(19, 14, 9, 0.2) 55%, rgba(17, 12, 8, 0.05) 100%)",
+    fallbackGradient:
       "radial-gradient(120% 140% at 70% 20%, rgba(248, 240, 227, 0.98), rgba(224, 214, 190, 0.94) 52%, rgba(190, 177, 150, 0.9) 100%)",
-    vignette:
-      "radial-gradient(circle at 5% 15%, rgba(148, 129, 87, 0.2), transparent 50%), radial-gradient(circle at 90% 90%, rgba(60, 46, 29, 0.32), transparent 60%)",
   },
   mission: {
+    kind: "gradient",
     gradient:
       "radial-gradient(120% 130% at 15% 85%, rgba(245, 236, 223, 0.98), rgba(219, 205, 181, 0.92) 50%, rgba(176, 158, 127, 0.9) 100%)",
-    vignette:
-      "radial-gradient(circle at 80% 10%, rgba(74, 58, 37, 0.28), transparent 55%), radial-gradient(circle at 20% 40%, rgba(171, 141, 86, 0.26), transparent 58%)",
+    texture:
+      "radial-gradient(circle at 80% 10%, rgba(74, 58, 37, 0.26), transparent 55%), radial-gradient(circle at 20% 40%, rgba(171, 141, 86, 0.24), transparent 58%)",
   },
   contact: {
-    gradient:
+    kind: "video",
+    src: "https://cdn.coverr.co/videos/coverr-steaming-pasta-in-stainless-steel-pot-6606/1080p.mp4",
+    poster: "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1600&q=80",
+    overlay:
+      "linear-gradient(180deg, rgba(18, 13, 9, 0.55) 0%, rgba(20, 14, 9, 0.25) 55%, rgba(24, 18, 12, 0.08) 100%)",
+    fallbackGradient:
       "radial-gradient(130% 130% at 80% 20%, rgba(247, 238, 225, 0.98), rgba(213, 199, 172, 0.92) 52%, rgba(162, 138, 96, 0.92) 100%)",
-    vignette:
-      "radial-gradient(circle at 15% 15%, rgba(97, 73, 43, 0.24), transparent 55%), radial-gradient(circle at 85% 85%, rgba(42, 32, 20, 0.32), transparent 60%)",
   },
 };
 
@@ -250,6 +277,13 @@ function IconCaretDown(props: IconProps) {
 
 export default function Home() {
   const heroRef = useRef<HTMLDivElement | null>(null);
+  const backgroundVideosRef = useRef<Record<SectionKey, HTMLVideoElement | null>>({
+    hero: null,
+    highlights: null,
+    promise: null,
+    mission: null,
+    contact: null,
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
@@ -257,8 +291,24 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState<SectionKey>("hero");
   const [activeThemeKey, setActiveThemeKey] = useState<SectionKey>("hero");
   const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    return () => mediaQuery.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setParallax({ x: 0, y: 0 });
+      return;
+    }
+
     const handlePointerMove = (event: PointerEvent) => {
       const { innerWidth, innerHeight } = window;
       const offsetX = (event.clientX / innerWidth - 0.5) * 20;
@@ -268,7 +318,7 @@ export default function Home() {
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
     return () => window.removeEventListener("pointermove", handlePointerMove);
-  }, []);
+  }, [prefersReducedMotion]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -331,6 +381,30 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      Object.values(backgroundVideosRef.current).forEach((video) => video?.pause());
+      return;
+    }
+
+    Object.entries(backgroundVideosRef.current).forEach(([key, video]) => {
+      if (!video) {
+        return;
+      }
+
+      if (key === activeThemeKey) {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            /* noop */
+          });
+        }
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeThemeKey, prefersReducedMotion]);
 
   useEffect(() => {
     const animatedElements = Array.from(
@@ -402,191 +476,319 @@ export default function Home() {
     };
   }, [isModalOpen, isNavOpen]);
 
-  const parallaxStyle = useMemo(
-    () => ({
+  const parallaxStyle = useMemo(() => {
+    if (prefersReducedMotion) {
+      return { transform: "translate3d(0,0,0)" };
+    }
+
+    return {
       transform: `translate3d(${parallax.x}px, ${parallax.y + scrollDepth * 24}px, 0)`,
-    }),
-    [parallax, scrollDepth],
+    };
+  }, [parallax, scrollDepth, prefersReducedMotion]);
+
+  const glowParallax = useMemo<
+    (multiplier: number, depth: number) => React.CSSProperties
+  >(() => {
+    if (prefersReducedMotion) {
+      return () => ({ transform: "translate3d(0,0,0)" });
+    }
+
+    return (multiplier: number, depth: number) => ({
+      transform: `translate3d(${parallax.x * multiplier}px, ${
+        parallax.y * multiplier + scrollDepth * depth
+      }px, 0)`,
+    });
+  }, [parallax, scrollDepth, prefersReducedMotion]);
+
+  const cardParallax = (index: number) => {
+    if (prefersReducedMotion) {
+      return { transform: "translate3d(0,0,0)" };
+    }
+
+    return {
+      transform: `translate3d(${parallax.x * (0.08 + index * 0.04)}px, ${
+        scrollDepth * 18 * (index + 1)
+      }px, 0)`,
+    };
+  };
+
+  const backgroundEntries = useMemo(
+    () => Object.entries(backgroundConfigs) as [SectionKey, BackgroundConfig][],
+    [],
   );
 
-  const cardParallax = (index: number) => ({
-    transform: `translate3d(${parallax.x * (0.08 + index * 0.04)}px, ${
-      scrollDepth * 18 * (index + 1)
-    }px, 0)`,
-  });
-
-  const activeTheme = backgroundThemes[activeThemeKey];
+  const heroVideoConfig =
+    backgroundConfigs.hero.kind === "video" ? backgroundConfigs.hero : null;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden text-[#1e1a16]">
+    <main className="relative min-h-screen overflow-x-hidden text-[#1f1810]">
+      <div className="pointer-events-none fixed inset-0 -z-50 overflow-hidden" aria-hidden>
+        {backgroundEntries.map(([key, config]) => {
+          const isActive = activeThemeKey === key;
+          const baseClasses =
+            "absolute inset-0 h-full w-full transition-opacity duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]";
+
+          if (config.kind === "video") {
+            if (prefersReducedMotion) {
+              backgroundVideosRef.current[key] = null;
+            }
+
+            return (
+              <div
+                key={key}
+                aria-hidden
+                className={`${baseClasses} ${isActive ? "opacity-100" : "opacity-0"}`}
+              >
+                {prefersReducedMotion ? (
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage:
+                        config.fallbackGradient || `url(${config.poster})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  />
+                ) : (
+                  <video
+                    ref={(node) => {
+                      backgroundVideosRef.current[key] = node;
+                    }}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    poster={config.poster}
+                  >
+                    <source src={config.src} type="video/mp4" />
+                  </video>
+                )}
+                {config.overlay ? (
+                  <div className="absolute inset-0" style={{ background: config.overlay }} />
+                ) : null}
+              </div>
+            );
+          }
+
+          const gradientImage = config.texture
+            ? `${config.gradient}, ${config.texture}`
+            : config.gradient;
+
+          return (
+            <div
+              key={key}
+              aria-hidden
+              className={`${baseClasses} ${isActive ? "opacity-100" : "opacity-0"}`}
+            >
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: gradientImage,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              {config.overlay ? (
+                <div className="absolute inset-0" style={{ background: config.overlay }} />
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-50 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-        style={{ backgroundImage: `${activeTheme.gradient}, ${activeTheme.vignette}` }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.32),transparent_45%),radial-gradient(circle_at_75%_80%,rgba(255,255,255,0.25),transparent_55%)] opacity-90 mix-blend-screen"
+        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_20%_15%,rgba(255,243,220,0.28),transparent_55%),radial-gradient(circle_at_75%_80%,rgba(229,196,137,0.22),transparent_58%)]"
       />
 
       {(isModalOpen || (isNavOpen && isMobileViewport)) && (
         <button
+          type="button"
           aria-label="Close overlays"
           className="fixed inset-0 z-40 cursor-pointer bg-black/45 backdrop-blur-sm"
           onClick={() => {
             setIsModalOpen(false);
             setIsNavOpen(false);
           }}
-          type="button"
         />
       )}
+
+      <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-6 sm:px-8">
+        <nav className="pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-white/65 bg-white/85 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.4em] text-[#2b2014] shadow-[0_25px_70px_rgba(38,26,14,0.25)] backdrop-blur-2xl">
+          <a
+            href="#hero"
+            className="flex items-center gap-3 text-xs font-semibold tracking-[0.5em] text-[#2b2014] transition-colors hover:text-[#5b4a2f]"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/60 bg-white text-sm font-bold text-[#2b2014] shadow-inner">
+              <span className="sr-only">Verdant Atelier</span>
+              <IconLeaf className="h-5 w-5" />
+            </span>
+            Verdant Atelier
+          </a>
+
+          <div className="hidden items-center gap-3 md:flex">
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  aria-current={isActive ? "page" : undefined}
+                  className={`rounded-full px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d9b574] ${
+                    isActive
+                      ? "bg-white text-[#1f160c] shadow-sm"
+                      : "text-[#695638] hover:bg-white/80 hover:text-[#1f160c]"
+                  }`}
+                  onClick={() => setIsNavOpen(false)}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="ml-2 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#236a4c] via-[#9e8641] to-[#d8b661] px-6 py-2 text-[11px] tracking-[0.4em] text-[#171006] shadow-[0_20px_50px_rgba(174,132,52,0.4)] transition hover:shadow-[0_24px_60px_rgba(174,132,52,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f5e0a1]"
+            >
+              Reserve
+            </button>
+          </div>
+
+          <button
+            id="floating-menu-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-controls="floating-menu-panel"
+            aria-expanded={isNavOpen}
+            className="flex cursor-pointer items-center gap-2 rounded-full border border-white/70 bg-white/85 px-4 py-2 text-[10px] font-semibold tracking-[0.45em] text-[#2b2014] shadow-sm transition hover:bg-white md:hidden"
+            onClick={() => setIsNavOpen((open) => !open)}
+          >
+            Menu
+            <IconCaretDown className={`h-4 w-4 transition ${isNavOpen ? "rotate-180" : ""}`} />
+          </button>
+        </nav>
+      </header>
+
+      <div
+        id="floating-menu-panel"
+        aria-hidden={!isNavOpen}
+        className={`fixed top-[5.5rem] z-40 w-[clamp(16rem,90vw,18rem)] origin-top rounded-3xl border border-white/55 bg-white/80 p-4 text-xs font-semibold uppercase tracking-[0.35em] text-[#3d2f1d] shadow-[0_35px_75px_rgba(32,23,13,0.3)] backdrop-blur-2xl transition-all duration-300 ${
+          isNavOpen ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
+        } ${isMobileViewport ? "left-1/2 -translate-x-1/2" : "right-8"}`}
+      >
+        <nav className="flex flex-col gap-2">
+          {navLinks.map((link) => (
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              aria-current={activeSection === link.id ? "page" : undefined}
+              className={`rounded-full px-4 py-2 text-left text-[11px] tracking-[0.35em] transition hover:bg-white/70 ${
+                activeSection === link.id ? "bg-white text-[#1f160c]" : "text-[#6d5837]"
+              }`}
+              onClick={() => setIsNavOpen(false)}
+            >
+              {link.label}
+            </a>
+          ))}
+          <button
+            type="button"
+            onClick={() => {
+              setIsModalOpen(true);
+              setIsNavOpen(false);
+            }}
+            className="mt-2 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-[#236a4c] via-[#9e8641] to-[#d8b661] px-4 py-2 text-[11px] tracking-[0.4em] text-[#171006] shadow-[0_20px_50px_rgba(174,132,52,0.4)] transition hover:shadow-[0_24px_60px_rgba(174,132,52,0.55)]"
+          >
+            Reserve
+          </button>
+        </nav>
+      </div>
 
       <section
         id="hero"
         data-theme="hero"
         ref={heroRef}
-        className="relative isolate flex min-h-screen items-center justify-center px-4 pb-20 pt-28 sm:px-8"
+        className="relative flex min-h-screen items-center justify-center px-4 pb-24 pt-32 sm:px-8"
       >
-        <div className="absolute inset-0 -z-30 overflow-hidden rounded-[3.5rem] border border-white/35 bg-white/35 shadow-[0_60px_120px_rgba(25,20,12,0.25)] backdrop-blur-3xl" />
-        <video
-          aria-hidden
-          autoPlay
-          className="absolute inset-0 -z-40 h-full w-full object-cover opacity-55"
-          loop
-          muted
-          playsInline
-          poster="https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1600&q=80"
-        >
-          <source src="https://cdn.coverr.co/videos/coverr-slow-drizzle-over-gourmet-plating-2312/1080p.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 -z-20 bg-gradient-to-br from-black/45 via-black/25 to-transparent" />
+        <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#1b140d]/55 via-[#1c150e]/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-[40vh] bg-gradient-to-t from-[#120c06]/65 via-transparent to-transparent" />
 
-        <div className="relative z-10 flex w-full max-w-6xl flex-col gap-12 rounded-[2.75rem] border border-white/35 bg-white/55 p-6 text-white shadow-[0_50px_120px_rgba(25,24,20,0.25)] backdrop-blur-3xl sm:p-10 lg:p-16">
-          <header className="flex items-center justify-between gap-4">
-            <a
-              href="#hero"
-              className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.45em] text-white/85 sm:text-sm"
-            >
-              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/20 text-base font-bold text-white shadow-inner">
-                <span className="sr-only">Verdant Atelier</span>
-                <IconLeaf className="h-5 w-5" />
-              </span>
+        <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center text-white sm:gap-14">
+          <div className="flex flex-col items-center gap-4" data-animate>
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.45em] text-white/80">
               Verdant Atelier
+            </span>
+            <h1 className="text-[clamp(2.75rem,5vw,4.5rem)] font-semibold leading-[0.95] tracking-tight text-white">
+              Where Flavor Meets Art
+            </h1>
+            <p className="max-w-2xl text-sm leading-relaxed text-white/85 sm:text-base">
+              Crafted with passion, plated with precision. Slow-dripped infusions, ember-kissed herbs, and velvet reductions compose every luminous course.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4" data-animate="slide-left">
+            <a
+              href="#highlights"
+              className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#1f6f4b] via-[#9d8641] to-[#d9b45f] px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-[#181006] shadow-[0_25px_60px_rgba(174,132,52,0.45)] transition hover:shadow-[0_28px_70px_rgba(174,132,52,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f6e5b2]"
+            >
+              Explore Our Menu
+              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </a>
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+              className="group inline-flex items-center gap-3 rounded-full border border-white/35 bg-[#130f0a]/70 px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-white transition hover:bg-[#181208]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+            >
+              Reserve an Evening
+              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+            </button>
+          </div>
 
-            <div className="flex items-center gap-3">
-              <button
-                id="floating-menu-trigger"
-                type="button"
-                aria-haspopup="true"
-                aria-expanded={isNavOpen}
-                onClick={() => setIsNavOpen((open) => !open)}
-                className="flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
-              >
-                Menu
-                <IconCaretDown className={`h-4 w-4 transition ${isNavOpen ? "rotate-180" : ""}`} />
-              </button>
-              <a
-                href="#contact"
-                className="hidden rounded-full border border-[#ffedc2]/40 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_15px_45px_rgba(167,142,70,0.4)] transition hover:shadow-[0_20px_55px_rgba(167,142,70,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffefce] sm:inline-flex"
-              >
-                Reserve
-              </a>
-            </div>
-          </header>
-
-          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div className="flex flex-col gap-8">
-              <div className="flex flex-col gap-4" data-animate>
-                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.4em] text-white/80">
-                  Project Open
-                </span>
-                <h1 className="text-4xl font-semibold uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
-                  Where Flavor Meets Art
-                </h1>
-                <p className="max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
-                  Crafted with passion, plated with precision. Slow-dripped infusions, heritage grains, and luminous finishing oils compose the Verdant Atelier tasting experience.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-4" data-animate="slide-left">
-                <a
-                  href="#highlights"
-                  className="group inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/15 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                >
-                  Explore Our Menu
-                  <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                </a>
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(true)}
-                  className="group inline-flex items-center gap-3 rounded-full border border-white/25 bg-[#0b120e]/70 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-[#152019]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
-                >
-                  Reserve an Evening
-                  <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                </button>
-              </div>
-            </div>
-
-            <div className="relative mx-auto flex w-full max-w-sm flex-col gap-6">
-              <div
-                className="relative aspect-square overflow-hidden rounded-full border border-white/30 bg-white/10 shadow-[0_45px_90px_rgba(20,14,8,0.45)] backdrop-blur-2xl"
-                style={parallaxStyle}
-              >
+          <div className="relative flex w-full max-w-4xl flex-col items-center gap-8">
+            <div className="hero-glow hero-glow--one" style={glowParallax(0.4, 18)} aria-hidden />
+            <div className="hero-glow hero-glow--two" style={glowParallax(-0.28, 14)} aria-hidden />
+            <div className="hero-portal" style={parallaxStyle}>
+              {heroVideoConfig && !prefersReducedMotion ? (
                 <video
-                  aria-hidden
+                  className="absolute inset-0 h-full w-full object-cover"
                   autoPlay
                   loop
                   muted
                   playsInline
-                  className="absolute inset-0 h-full w-full object-cover"
-                  poster="https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80"
+                  preload="metadata"
+                  poster={heroVideoConfig.poster}
                 >
-                  <source src="https://cdn.coverr.co/videos/coverr-doughnut-of-herbs-9980/1080p.mp4" type="video/mp4" />
+                  <source src={heroVideoConfig.src} type="video/mp4" />
                 </video>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_60%)]" />
-              </div>
-
-              <ul className="grid gap-3" data-animate="float">
-                {heroHighlights.map((highlight, index) => (
-                  <li
-                    key={highlight.title}
-                    className="flex items-start gap-3 rounded-[1.5rem] border border-white/25 bg-white/12 px-4 py-3 text-white/90 backdrop-blur-xl transition hover:bg-white/18"
-                    style={cardParallax(index)}
-                  >
-                    <span className="mt-1 h-1.5 w-8 rounded-full bg-gradient-to-r from-white/40 to-white" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-semibold uppercase tracking-[0.3em]">{highlight.title}</p>
-                      <p className="text-xs text-white/75">{highlight.description}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              ) : heroVideoConfig ? (
+                <Image
+                  alt="Chef plating"
+                  src={heroVideoConfig.poster}
+                  fill
+                  priority
+                  className="object-cover"
+                  sizes="(max-width: 768px) 80vw, 420px"
+                />
+              ) : null}
+              <div className="hero-portal__halo" aria-hidden />
             </div>
-          </div>
-        </div>
 
-        <div
-          id="floating-menu-panel"
-          className={`absolute top-24 z-30 w-[clamp(16rem,90vw,18rem)] origin-top rounded-3xl border border-white/30 bg-white/15 p-4 text-xs font-semibold uppercase tracking-[0.35em] text-white shadow-[0_35px_75px_rgba(18,16,13,0.35)] backdrop-blur-2xl transition-all duration-300 ${
-            isNavOpen ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
-          } ${isMobileViewport ? "left-1/2 -translate-x-1/2" : "right-6"}`}
-        >
-          <nav className="flex flex-col gap-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                aria-current={activeSection === link.id ? "page" : undefined}
-                className={`rounded-full border border-white/0 px-4 py-2 text-left text-[11px] tracking-[0.35em] text-white/80 transition hover:border-white/25 hover:bg-white/10 hover:text-white ${
-                  activeSection === link.id ? "border-white/30 bg-white/15 text-white" : ""
-                }`}
-                onClick={() => setIsNavOpen(false)}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+            <ul className="grid w-full gap-3 sm:grid-cols-2 lg:grid-cols-3" data-animate="float">
+              {heroHighlights.map((highlight, index) => (
+                <li
+                  key={highlight.title}
+                  className="flex items-start gap-3 rounded-[1.5rem] border border-white/25 bg-white/12 px-4 py-3 text-left text-white/90 backdrop-blur-xl transition hover:bg-white/18"
+                  style={cardParallax(index)}
+                >
+                  <span className="mt-1 h-1.5 w-8 rounded-full bg-gradient-to-r from-white/50 to-white" />
+                  <div className="space-y-1">
+                    <p className="text-sm font-semibold uppercase tracking-[0.3em]">{highlight.title}</p>
+                    <p className="text-xs text-white/75">{highlight.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
 
