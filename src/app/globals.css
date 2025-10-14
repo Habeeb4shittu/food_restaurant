@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
   --background: #eef0ec;
   --foreground: #16140f;
@@ -34,4 +38,39 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+[data-animate] {
+  opacity: 0;
+  transform: translateY(48px) scale(0.98);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+[data-animate="slide-right"] {
+  transform: translateX(-48px) scale(0.98);
+}
+
+[data-animate="slide-right"].is-visible {
+  transform: translateX(0) scale(1);
+}
+
+[data-animate="slide-left"] {
+  transform: translateX(48px) scale(0.98);
+}
+
+[data-animate="slide-left"].is-visible {
+  transform: translateX(0) scale(1);
+}
+
+[data-animate="float"] {
+  transform: translateY(32px) scale(0.96);
+}
+
+[data-animate="float"].is-visible {
+  transform: translateY(0) scale(1);
 }
