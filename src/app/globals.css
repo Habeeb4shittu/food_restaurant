@@ -1,26 +1,136 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eef0ec;
+  --foreground: #16140f;
+  --accent: #3c5f3a;
+  --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0f1610;
+    --foreground: #f2f6ed;
+    --accent: #8dc07a;
   }
 }
 
 body {
-  background: var(--background);
+  margin: 0;
+  background: #f5efe2;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[data-animate] {
+  opacity: 0;
+  transform: translateY(48px) scale(0.98);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+[data-animate="slide-right"] {
+  transform: translateX(-48px) scale(0.98);
+}
+
+[data-animate="slide-right"].is-visible {
+  transform: translateX(0) scale(1);
+}
+
+[data-animate="slide-left"] {
+  transform: translateX(48px) scale(0.98);
+}
+
+[data-animate="slide-left"].is-visible {
+  transform: translateX(0) scale(1);
+}
+
+[data-animate="float"] {
+  transform: translateY(32px) scale(0.96);
+}
+
+[data-animate="float"].is-visible {
+  transform: translateY(0) scale(1);
+}
+
+.hero-portal {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 22rem);
+  aspect-ratio: 1 / 1;
+  border-radius: 9999px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 228, 190, 0.35);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 248, 230, 0.2), transparent 60%),
+    rgba(20, 14, 8, 0.25);
+  box-shadow: 0 45px 90px rgba(20, 14, 8, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.hero-portal__halo {
+  position: absolute;
+  inset: -15%;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(255, 206, 150, 0.5) 0%, rgba(255, 239, 208, 0.25) 40%, transparent 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.hero-glow {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.hero-glow--one {
+  width: 18rem;
+  height: 18rem;
+  top: -5rem;
+  right: 6%;
+  background: radial-gradient(circle, rgba(255, 206, 150, 0.45) 0%, rgba(255, 206, 150, 0.08) 65%, transparent 95%);
+}
+
+.hero-glow--two {
+  width: 14rem;
+  height: 14rem;
+  bottom: -4rem;
+  left: 8%;
+  background: radial-gradient(circle, rgba(110, 176, 137, 0.4) 0%, rgba(110, 176, 137, 0.08) 60%, transparent 100%);
+}
+
+@media (max-width: 640px) {
+  .hero-portal {
+    width: min(100%, 18rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow,
+  .hero-portal {
+    transform: none !important;
+  }
 }
