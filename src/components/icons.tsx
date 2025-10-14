@@ -2,6 +2,7 @@
 
 import { forwardRef } from "react";
 import type { SVGProps } from "react";
+import type { JSX } from "react";
 
 // The stroke paths below mirror the Lucide icon set so the UI can use the same
 // visual language without bringing the dependency into the bundle. Lucide icons
