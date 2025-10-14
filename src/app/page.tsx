@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+type SectionKey = "hero" | "highlights" | "promise" | "mission" | "contact";
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 
-const navLinks = [
+const navLinks: { id: SectionKey; label: string }[] = [
   { id: "hero", label: "Home" },
   { id: "highlights", label: "Highlights" },
   { id: "promise", label: "Promise" },
@@ -13,42 +15,82 @@ const navLinks = [
   { id: "contact", label: "Contact" },
 ];
 
+const backgroundThemes: Record<SectionKey, { gradient: string; vignette: string }> = {
+  hero: {
+    gradient:
+      "radial-gradient(120% 120% at 20% 20%, rgba(253, 249, 241, 0.95) 0%, rgba(242, 233, 219, 0.94) 45%, rgba(211, 204, 190, 0.92) 100%)",
+    vignette:
+      "radial-gradient(circle at 80% 80%, rgba(52, 41, 24, 0.25), transparent 55%), radial-gradient(circle at 10% 10%, rgba(184, 167, 120, 0.22), transparent 60%)",
+  },
+  highlights: {
+    gradient:
+      "radial-gradient(125% 125% at 30% 10%, rgba(248, 245, 238, 0.96), rgba(232, 223, 206, 0.94) 48%, rgba(188, 178, 151, 0.92) 100%)",
+    vignette:
+      "radial-gradient(circle at 90% 20%, rgba(90, 69, 38, 0.28), transparent 58%), radial-gradient(circle at 10% 80%, rgba(166, 134, 82, 0.24), transparent 55%)",
+  },
+  promise: {
+    gradient:
+      "radial-gradient(120% 140% at 70% 20%, rgba(248, 240, 227, 0.98), rgba(224, 214, 190, 0.94) 52%, rgba(190, 177, 150, 0.9) 100%)",
+    vignette:
+      "radial-gradient(circle at 5% 15%, rgba(148, 129, 87, 0.2), transparent 50%), radial-gradient(circle at 90% 90%, rgba(60, 46, 29, 0.32), transparent 60%)",
+  },
+  mission: {
+    gradient:
+      "radial-gradient(120% 130% at 15% 85%, rgba(245, 236, 223, 0.98), rgba(219, 205, 181, 0.92) 50%, rgba(176, 158, 127, 0.9) 100%)",
+    vignette:
+      "radial-gradient(circle at 80% 10%, rgba(74, 58, 37, 0.28), transparent 55%), radial-gradient(circle at 20% 40%, rgba(171, 141, 86, 0.26), transparent 58%)",
+  },
+  contact: {
+    gradient:
+      "radial-gradient(130% 130% at 80% 20%, rgba(247, 238, 225, 0.98), rgba(213, 199, 172, 0.92) 52%, rgba(162, 138, 96, 0.92) 100%)",
+    vignette:
+      "radial-gradient(circle at 15% 15%, rgba(97, 73, 43, 0.24), transparent 55%), radial-gradient(circle at 85% 85%, rgba(42, 32, 20, 0.32), transparent 60%)",
+  },
+};
+
 const heroHighlights = [
   {
     title: "Fire-Roasted Langoustine",
-    description: "Brushed with smoked beurre monté, fennel pollen, and charred Meyer lemon pearls.",
+    description:
+      "Brushed with smoked beurre monté, fennel pollen, and charred Meyer lemon pearls.",
     image:
       "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=640&q=80",
   },
   {
     title: "Velvet Truffle Cappelletti",
-    description: "Hand-folded pasta in parmesan brodo, finished with aged balsamic and porcini oil.",
+    description:
+      "Hand-folded pasta in parmesan brodo, finished with aged balsamic and porcini oil.",
     image:
       "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=640&q=80",
   },
   {
     title: "Amber Patisserie Tableau",
-    description: "Caramelia mousse, brûléed figs, and toasted pistachio praline in warm candlelight.",
+    description:
+      "Caramelia mousse, brûléed figs, and toasted pistachio praline in warm candlelight.",
     image:
       "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=640&q=80",
   },
 ];
 
-const pillars = [
+const promiseHighlights = [
+  "House-fermented infusions & botanical steam",
+  "Electrostatic seasoning for feather-light finishes",
+  "Partnerships with biodynamic farms & foragers",
+  "Immersive service choreography & sensory pacing",
+];
+
+const missionDetails = [
   {
-    title: "Local Producers",
-    copy: "We partner with nearby farms for greens, cheeses, and sustainable proteins harvested at peak flavor.",
-    icon: IconLeaf,
+    label: "Tasting cadence",
+    value: "Eight-course degustation, 2.5 hours",
   },
   {
-    title: "Slow Crafted",
-    copy: "Ferments, broths, and breads are nurtured in-house to coax depth from simple ingredients.",
-    icon: IconSparkles,
+    label: "Soundscape",
+    value: "Analog jazz pressings curated nightly",
   },
   {
-    title: "Gather Together",
-    copy: "Dining rooms designed for long conversations, celebratory toasts, and everyday comfort.",
-    icon: IconFirefly,
+    label: "Studio garden",
+    value: "Greenhouse-grown herbs harvested on demand",
   },
 ];
 
@@ -96,27 +138,6 @@ function IconSparkles(props: IconProps) {
       {...props}
     >
       <path d="M12 3v4M12 17v4M5 12H1m22 0h-4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M5.6 18.4l2.8-2.8M15.6 8.4l2.8-2.8" />
-    </svg>
-  );
-}
-
-function IconFirefly(props: IconProps) {
-  return (
-    <svg
-      aria-hidden
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={1.8}
-      viewBox="0 0 24 24"
-      {...props}
-    >
-      <path d="M12 21c3-1.5 6-4.239 6-7.5A6 6 0 0 0 6 13.5C6 16.761 9 19.5 12 21Z" />
-      <path d="M12 21V9" />
-      <path d="M12 5V3" />
-      <path d="M8 7l-1.5-1.5" />
-      <path d="M16 7l1.5-1.5" />
     </svg>
   );
 }
@@ -210,24 +231,42 @@ function IconArrowRight(props: IconProps) {
   );
 }
 
+function IconCaretDown(props: IconProps) {
+  return (
+    <svg
+      aria-hidden
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={1.8}
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
 export default function Home() {
+  const heroRef = useRef<HTMLDivElement | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
-  const heroRef = useRef<HTMLDivElement | null>(null);
-  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [scrollDepth, setScrollDepth] = useState(0);
+  const [activeSection, setActiveSection] = useState<SectionKey>("hero");
+  const [activeThemeKey, setActiveThemeKey] = useState<SectionKey>("hero");
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
 
   useEffect(() => {
     const handlePointerMove = (event: PointerEvent) => {
-      const { innerHeight, innerWidth } = window;
-      const x = (event.clientX / innerWidth - 0.5) * 32;
-      const y = (event.clientY / innerHeight - 0.5) * 18;
-      setParallaxOffset({ x, y });
+      const { innerWidth, innerHeight } = window;
+      const offsetX = (event.clientX / innerWidth - 0.5) * 20;
+      const offsetY = (event.clientY / innerHeight - 0.5) * 12;
+      setParallax({ x: offsetX, y: offsetY });
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-
     return () => window.removeEventListener("pointermove", handlePointerMove);
   }, []);
 
@@ -235,12 +274,10 @@ export default function Home() {
     const handleScroll = () => {
       const section = heroRef.current;
       if (!section) return;
-
       const rect = section.getBoundingClientRect();
       const viewportHeight = window.innerHeight || 1;
       const rawProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
-      const progress = Math.min(1, Math.max(0, rawProgress));
-      setScrollDepth(progress);
+      setScrollDepth(Math.min(1, Math.max(0, rawProgress)));
     };
 
     handleScroll();
@@ -253,11 +290,96 @@ export default function Home() {
     };
   }, []);
 
-  const getParallaxStyle = (intensity: number, offsetY = 0) => ({
-    transform: `translate3d(${parallaxOffset.x * intensity}px, ${
-      parallaxOffset.y * intensity + scrollDepth * intensity * 40 + offsetY
-    }px, 0)`,
-  });
+  useEffect(() => {
+    const evaluateViewport = () => {
+      setIsMobileViewport(window.matchMedia("(max-width: 640px)").matches);
+    };
+
+    evaluateViewport();
+    window.addEventListener("resize", evaluateViewport);
+
+    return () => window.removeEventListener("resize", evaluateViewport);
+  }, []);
+
+  useEffect(() => {
+    const sections = navLinks
+      .map((link) => document.querySelector<HTMLElement>(`[data-theme="${link.id}"]`))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    if (!sections.length) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+
+        if (!visible.length) {
+          return;
+        }
+
+        const nextKey = (visible[0].target.getAttribute("data-theme") || "hero") as SectionKey;
+        setActiveSection(nextKey);
+        setActiveThemeKey(nextKey);
+      },
+      { threshold: [0.3, 0.6, 0.85], rootMargin: "-20% 0px -25%" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const animatedElements = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-animate]"),
+    );
+
+    if (!animatedElements.length) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.25, rootMargin: "0px 0px -10%" },
+    );
+
+    animatedElements.forEach((element) => observer.observe(element));
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isNavOpen) {
+      return;
+    }
+
+    const handleOutside = (event: PointerEvent) => {
+      const trigger = document.getElementById("floating-menu-trigger");
+      const panel = document.getElementById("floating-menu-panel");
+      if (!panel || !trigger) {
+        return;
+      }
+
+      if (panel.contains(event.target as Node) || trigger.contains(event.target as Node)) {
+        return;
+      }
+
+      setIsNavOpen(false);
+    };
+
+    window.addEventListener("pointerdown", handleOutside);
+    return () => window.removeEventListener("pointerdown", handleOutside);
+  }, [isNavOpen]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -280,477 +402,37 @@ export default function Home() {
     };
   }, [isModalOpen, isNavOpen]);
 
-  useEffect(() => {
-    const sectionIds = navLinks.map((link) => link.id);
-    const sections = sectionIds
-      .map((id) => document.getElementById(id))
-      .filter((element): element is HTMLElement => Boolean(element));
+  const parallaxStyle = useMemo(
+    () => ({
+      transform: `translate3d(${parallax.x}px, ${parallax.y + scrollDepth * 24}px, 0)`,
+    }),
+    [parallax, scrollDepth],
+  );
 
-    if (sections.length === 0) {
-      return;
-    }
+  const cardParallax = (index: number) => ({
+    transform: `translate3d(${parallax.x * (0.08 + index * 0.04)}px, ${
+      scrollDepth * 18 * (index + 1)
+    }px, 0)`,
+  });
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
-
-        if (visibleEntries.length === 0) {
-          return;
-        }
-
-        const mostVisible = visibleEntries.reduce((prev, current) =>
-          prev.intersectionRatio > current.intersectionRatio ? prev : current,
-        );
-
-        setActiveSection(mostVisible.target.id);
-      },
-      { threshold: [0.2, 0.5, 0.8], rootMargin: "-20% 0px -40%" },
-    );
-
-    sections.forEach((section) => observer.observe(section));
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const animatedElements = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-animate]"),
-    );
-
-    if (animatedElements.length === 0) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.2, rootMargin: "0px 0px -10%" },
-    );
-
-    animatedElements.forEach((element) => observer.observe(element));
-
-    return () => observer.disconnect();
-  }, []);
-
-  const handleNavLinkClick = () => {
-    setIsNavOpen(false);
-  };
-
-  const handleReserveClick = () => {
-    setIsModalOpen(true);
-    setIsNavOpen(false);
-  };
+  const activeTheme = backgroundThemes[activeThemeKey];
 
   return (
-    <main className="flex min-h-screen flex-col bg-[#eef0ec] text-[#16140f]">
-      <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex justify-center px-4 pt-6 sm:px-8">
-        <nav className="pointer-events-auto flex w-full max-w-6xl items-center justify-between rounded-full border border-[#e4e1d5] bg-white/90 px-6 py-4 text-xs font-semibold uppercase tracking-[0.32em] text-[#2b2a24] shadow-[0_20px_60px_rgba(20,27,18,0.28)] backdrop-blur-2xl">
-          <a
-            className="flex items-center gap-2 text-sm tracking-[0.4em] text-[#1f1c16] transition-colors hover:text-[#2f6337]"
-            href="#hero"
-          >
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-base font-bold text-[#1f1c16] shadow-inner">
-              <IconLeaf className="h-5 w-5 text-[#1f1c16]" />
-            </span>
-            Verdant Kitchen
-          </a>
-          <div className="hidden items-center gap-4 sm:flex">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={link.id}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full border px-4 py-2 text-[11px] tracking-[0.35em] transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${
-                    isActive
-                      ? "border-[#d7d2c4] bg-white text-[#1f1c16] shadow-sm"
-                      : "border-transparent text-[#474335] hover:-translate-y-0.5 hover:border-[#d7d2c4] hover:bg-white/90 hover:text-[#1f1c16]"
-                  }`}
-                  href={`#${link.id}`}
-                >
-                  {link.label}
-                </a>
-              );
-            })}
-            <button
-              className="group flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-2 text-[11px] tracking-[0.4em] text-[#1f1c16] transition hover:-translate-y-0.5 hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              onClick={handleReserveClick}
-              type="button"
-            >
-              Reserve
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </button>
-          </div>
-          <button
-            aria-controls="mobile-nav"
-            aria-expanded={isNavOpen}
-            className="flex cursor-pointer flex-col items-end gap-1 text-[10px] font-normal tracking-[0.45em] text-[#2b2a24] transition-colors hover:text-[#2f6337] sm:hidden"
-            onClick={() => setIsNavOpen((prev) => !prev)}
-            type="button"
-          >
-            Menu
-            <span className="h-px w-6 bg-[#2b2a24]" />
-          </button>
-        </nav>
-      </header>
+    <main className="relative min-h-screen overflow-x-hidden text-[#1e1a16]">
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-50 transition-all duration-[1200ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
+        style={{ backgroundImage: `${activeTheme.gradient}, ${activeTheme.vignette}` }}
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.32),transparent_45%),radial-gradient(circle_at_75%_80%,rgba(255,255,255,0.25),transparent_55%)] opacity-90 mix-blend-screen"
+      />
 
-      <section
-        ref={heroRef}
-        className="relative isolate flex min-h-[92vh] items-center overflow-hidden px-4 pb-24 pt-32 sm:px-8 lg:min-h-screen"
-        id="hero"
-      >
-        <video
-          aria-hidden
-          autoPlay
-          className="absolute inset-0 -z-30 h-full w-full object-cover"
-          loop
-          muted
-          playsInline
-          poster="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=60"
-          src="https://cdn.coverr.co/videos/coverr-gourmet-chef-plating-a-fine-dining-dish-7321/1080p.mp4"
-        />
-        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,#1a1712_0%,rgba(18,13,8,0.65)_40%,rgba(12,9,6,0.35)_65%,transparent_90%)]" />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(6,5,4,0.55)] via-[rgba(16,12,9,0.4)] to-transparent" />
-
-        <div className="pointer-events-none absolute inset-0 -z-5">
-          <div
-            className="absolute left-[-8%] top-32 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_top,#c8a97a_0%,rgba(83,56,30,0.7)_60%,transparent_100%)] opacity-40 blur-3xl sm:h-80 sm:w-80"
-            style={getParallaxStyle(0.35)}
-          />
-          <div
-            className="absolute right-[-10%] top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_top,#f2d6b0_0%,rgba(138,92,38,0.55)_55%,transparent_100%)] opacity-40 blur-3xl sm:h-96 sm:w-96"
-            style={getParallaxStyle(-0.3)}
-          />
-          <div
-            className="absolute inset-x-0 bottom-[-35%] h-[45vh] bg-gradient-to-t from-[#f1ede4] via-[#f1ede4]/50 to-transparent"
-            style={getParallaxStyle(0.1)}
-          />
-        </div>
-
-        <div
-          className="pointer-events-none absolute left-4 top-32 hidden rounded-full border border-white/25 bg-white/10 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/70 shadow-[0_20px_60px_rgba(12,10,6,0.4)] backdrop-blur-xl sm:block"
-          data-animate="slide-right"
-        >
-          Verdant Atelier
-        </div>
-
-        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center text-white">
-          <div className="flex flex-col items-center gap-6" data-animate>
-            <p className="text-xs font-semibold uppercase tracking-[0.65em] text-white/70 sm:text-sm">
-              Crafted with obsidian plates & warm brass light
-            </p>
-            <h1 className="text-4xl font-semibold leading-tight drop-shadow-[0_20px_60px_rgba(12,9,6,0.65)] sm:text-5xl lg:text-6xl">
-              Where Flavor Meets Art
-            </h1>
-            <p className="max-w-2xl text-sm text-white/80 sm:text-base">
-              Crafted with passion, plated with precision. Each course captures the glow of the kitchen hearth and the poetry of
-              modern gastronomy.
-            </p>
-          </div>
-
-          <div className="flex flex-col items-center gap-3 sm:flex-row" data-animate="slide-left">
-            <a
-              className="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden rounded-full border border-white/25 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white shadow-[0_28px_80px_rgba(10,8,5,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d6a651]"
-              href="#highlights"
-            >
-              <span className="absolute inset-0 bg-gradient-to-r from-[#2f6f4f] via-[#3f845c] to-[#d7a74d] opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
-              <span className="relative flex items-center gap-3">
-                Explore Our Menu
-                <IconArrowRight className="h-4 w-4" />
-              </span>
-            </a>
-            <button
-              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white/80 transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
-              onClick={handleReserveClick}
-              type="button"
-            >
-              Reserve an Evening
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </button>
-          </div>
-
-          <div className="grid w-full gap-4 sm:grid-cols-3" data-animate="float">
-            {heroHighlights.map((highlight, index) => (
-              <article
-                key={highlight.title}
-                className="relative flex flex-col gap-3 overflow-hidden rounded-[26px] border border-white/20 bg-white/10 p-4 text-left text-white shadow-[0_25px_90px_rgba(10,8,5,0.5)] backdrop-blur-2xl transition hover:-translate-y-1"
-                style={getParallaxStyle(0.12 + index * 0.06)}
-              >
-                <div className="relative h-36 w-full overflow-hidden rounded-[20px] border border-white/25">
-                  <Image alt={highlight.title} fill className="object-cover" sizes="(max-width: 768px) 80vw, 260px" src={highlight.image} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(12,9,6,0.55)] via-transparent to-transparent" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-base font-semibold text-white">{highlight.title}</h3>
-                  <p className="text-xs text-white/75">{highlight.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-20 sm:px-8" id="highlights">
-        <div
-          className="mx-auto flex w-full max-w-6xl flex-col gap-10 rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-[0_30px_70px_rgba(54,68,45,0.12)] backdrop-blur-xl sm:p-10"
-          data-animate
-        >
-          <div className="flex flex-col gap-4 text-center">
-            <h2 className="text-3xl font-semibold text-[#16140f] sm:text-4xl">Chef’s Highlights</h2>
-            <p className="mx-auto max-w-2xl text-sm text-[#4e4a3f] sm:text-base">
-              Rotating spotlights from our kitchen, each paired with sustainable sips and lively conversation.
-            </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-            {heroHighlights.map((highlight, index) => (
-              <article
-                key={`${highlight.title}-${index}`}
-                className="group relative flex flex-col gap-4 rounded-[26px] border border-white/60 bg-white/50 p-6 text-left shadow-[0_30px_60px_rgba(41,48,34,0.1)] backdrop-blur-2xl transition hover:-translate-y-2 hover:border-[#d1e2cb]"
-                data-animate={index === 0 ? "slide-right" : index === 1 ? "float" : "slide-left"}
-              >
-                <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-[22px] border border-[#d9d5ca] bg-gradient-to-br from-white via-[#f3f1ea] to-[#e3ebdf]">
-                  <Image alt={highlight.title} fill className="object-cover" src={highlight.image} sizes="(max-width: 768px) 80vw, 320px" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-[#1f1c16]">{highlight.title}</h3>
-                  <p className="text-sm text-[#575246]">{highlight.description}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-br from-[#eef3ea] via-white to-[#e5ecdf] px-4 py-20 sm:px-8" id="promise">
-        <div className="mx-auto grid w-full max-w-6xl gap-12 rounded-[32px] border border-white/70 bg-white/75 p-6 shadow-[0_40px_90px_rgba(46,58,37,0.15)] backdrop-blur-xl lg:grid-cols-[1.1fr_1fr] lg:items-center sm:p-10">
-          <div className="space-y-6" data-animate="slide-right">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d7d2c4] bg-white/70 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-[#6d6859]">
-              <IconSparkles className="h-4 w-4" />
-              Our Promise
-            </span>
-            <h2 className="text-3xl font-semibold text-[#16140f] sm:text-4xl">
-              Rooted in sustainability, crafted for community.
-            </h2>
-            <p className="max-w-2xl text-sm text-[#4e4a3f] sm:text-lg">
-              From soil to service, every choice we make prioritizes local ecosystems and the neighbors who dine with us nightly.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {pillars.map((pillar, index) => (
-                <div
-                  key={pillar.title}
-                  className="rounded-[22px] border border-white/70 bg-white/60 p-5 shadow-sm backdrop-blur-xl"
-                  data-animate={index === 0 ? "slide-right" : index === 1 ? "float" : "slide-left"}
-                >
-                  <pillar.icon className="mb-3 h-6 w-6 text-[#3b7a45]" />
-                  <h3 className="text-base font-semibold text-[#1f1c16]">{pillar.title}</h3>
-                  <p className="mt-2 text-sm text-[#575246]">{pillar.copy}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="relative flex items-center justify-center" data-animate="slide-left">
-            <div className="absolute inset-0 -z-10 rounded-[32px] bg-gradient-to-br from-[#f4f3ec] via-white to-[#e4ecdf]" />
-            <div className="relative aspect-square w-full max-w-sm overflow-hidden rounded-[32px] border border-white/60 bg-white shadow-2xl">
-              <Image
-                alt="Fresh herbs and edible flowers arranged in a ring"
-                className="object-cover"
-                fill
-                sizes="(max-width: 768px) 80vw, 320px"
-                src="https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=800&q=80"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-4 py-20 sm:px-8" id="mission">
-        <div
-          className="mx-auto flex w-full max-w-6xl flex-col gap-8 rounded-[32px] border border-white/70 bg-white/70 p-6 shadow-[0_40px_80px_rgba(59,73,48,0.12)] backdrop-blur-xl sm:p-10"
-          data-animate
-        >
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-[0.4em] text-[#6d6859]">
-              <span>Terrace</span>
-              <span className="h-1 w-1 rounded-full bg-[#6d6859]" />
-              <span>Dining Room</span>
-              <span className="h-1 w-1 rounded-full bg-[#6d6859]" />
-              <span>Chef’s Counter</span>
-            </div>
-            <h2 className="text-3xl font-semibold leading-tight text-[#12100b] sm:text-4xl lg:text-5xl">
-              Our mission is to nourish with intention, serving dishes that honor regional farmers and the stories they tell.
-            </h2>
-          </div>
-          <p className="max-w-3xl text-sm text-[#4e4a3f] sm:text-lg">
-            Guided by a love for the soil, Verdant Kitchen invites guests into a culinary experience that evolves with the seasons. Every visit brings a new expression of flavor, artistry, and hospitality.
-          </p>
-        </div>
-      </section>
-
-      <section className="bg-gradient-to-br from-[#eef3ea] via-white to-[#e5ecdf] px-4 py-20 sm:px-8" id="contact">
-        <div
-          className="mx-auto grid w-full max-w-6xl gap-10 rounded-[32px] border border-white/70 bg-white/85 p-6 text-[#1f1c16] shadow-[0_40px_80px_rgba(59,73,48,0.15)] backdrop-blur-2xl sm:grid-cols-[1fr_1fr] sm:p-12"
-          data-animate
-        >
-          <div className="space-y-6">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d7d2c4] bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.35em] text-[#6d6859]">
-              <IconSparkles className="h-4 w-4" />
-              Let’s Connect
-            </span>
-            <h2 className="text-3xl font-semibold leading-tight text-[#12100b] sm:text-4xl">
-              Reserve a table or plan a private event.
-            </h2>
-            <p className="text-sm text-[#4e4a3f] sm:text-base">
-              Share your occasion and our hospitality team will curate an experience with garden-fresh menus, thoughtful pairings, and warm service.
-            </p>
-            <div className="space-y-3 text-sm text-[#4e4a3f]">
-              {contactDetails.map((detail) => (
-                <p key={detail.title} className="flex items-start gap-3 text-sm text-[#4e4a3f]">
-                  <detail.icon className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#3b7a45]" />
-                  <span>
-                    <span className="block text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]">
-                      {detail.title}
-                    </span>
-                    {detail.description}
-                  </span>
-                </p>
-              ))}
-              <a
-                className="group inline-flex items-center gap-2 text-[#3b7a45] underline-offset-4 transition hover:text-[#2f6337]"
-                href="tel:+12075550123"
-              >
-                <IconPhone className="h-4 w-4" />
-                +1 (207) 555-0123
-                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
-              </a>
-              <a
-                className="group inline-flex items-center gap-2 text-[#3b7a45] underline-offset-4 transition hover:text-[#2f6337]"
-                href="mailto:hello@verdantkitchen.com"
-              >
-                <IconMail className="h-4 w-4" />
-                hello@verdantkitchen.com
-                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
-              </a>
-            </div>
-            <button
-              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              onClick={handleReserveClick}
-              type="button"
-            >
-              Reserve a Table
-              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-            </button>
-          </div>
-          <form className="grid gap-4" data-animate="slide-left">
-            <div className="grid gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="name">
-                Name
-              </label>
-              <input
-                className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                id="name"
-                name="name"
-                placeholder="Your name"
-                type="text"
-              />
-            </div>
-            <div className="grid gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="email">
-                Email
-              </label>
-              <input
-                className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                id="email"
-                name="email"
-                placeholder="your@email.com"
-                type="email"
-              />
-            </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <div className="grid gap-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="occasion">
-                  Occasion
-                </label>
-                <input
-                  className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                  id="occasion"
-                  name="occasion"
-                  placeholder="Anniversary, tasting, etc."
-                  type="text"
-                />
-              </div>
-              <div className="grid gap-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="party-size">
-                  Party Size
-                </label>
-                <input
-                  className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                  id="party-size"
-                  min={1}
-                  name="party-size"
-                  type="number"
-                />
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="details">
-                Details
-              </label>
-              <textarea
-                className="min-h-[140px] rounded-3xl border border-[#d9d5ca] bg-white/90 px-5 py-4 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                id="details"
-                name="details"
-                placeholder="Tell us about your celebration"
-              />
-            </div>
-            <button
-              className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              type="submit"
-            >
-              Send Message
-              <IconArrowRight className="ml-2 inline h-4 w-4 transition group-hover:translate-x-0.5" />
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <footer className="bg-gradient-to-br from-[#f1f3ef] via-white to-[#eaf2ea] px-4 py-12 sm:px-8">
-        <div
-          className="mx-auto flex w-full max-w-6xl flex-col gap-6 rounded-[32px] border border-white/70 bg-white/75 p-6 shadow-[0_30px_70px_rgba(54,68,45,0.12)] backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between sm:p-10"
-          data-animate
-        >
-          <div className="space-y-2">
-            <h3 className="text-2xl font-semibold text-[#1f1c16]">Visit Verdant Kitchen</h3>
-            <p className="text-sm text-[#575246]">
-              214 Grove Street · Portland, Maine · Open Wednesday to Sunday, 5pm – late
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-3 text-sm text-[#575246]">
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d7d2c4] bg-white/80 px-3 py-1 text-xs uppercase tracking-[0.3em] text-[#6d6859]">
-              <IconSparkles className="h-4 w-4" />
-              Instagram
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d7d2c4] bg-white/80 px-3 py-1 text-xs uppercase tracking-[0.3em] text-[#6d6859]">
-              <IconSparkles className="h-4 w-4" />
-              Newsletter
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#d7d2c4] bg-white/80 px-3 py-1 text-xs uppercase tracking-[0.3em] text-[#6d6859]">
-              <IconSparkles className="h-4 w-4" />
-              Gift Cards
-            </span>
-          </div>
-        </div>
-      </footer>
-
-      {(isModalOpen || isNavOpen) && (
+      {(isModalOpen || (isNavOpen && isMobileViewport)) && (
         <button
           aria-label="Close overlays"
-          className="fixed inset-0 z-40 cursor-pointer bg-black/50 backdrop-blur-sm"
+          className="fixed inset-0 z-40 cursor-pointer bg-black/45 backdrop-blur-sm"
           onClick={() => {
             setIsModalOpen(false);
             setIsNavOpen(false);
@@ -759,141 +441,423 @@ export default function Home() {
         />
       )}
 
-      {isNavOpen && (
-        <aside
-          aria-labelledby="mobile-nav-title"
-          className="fixed inset-x-0 top-0 z-50 mx-auto w-full max-w-sm translate-y-8 rounded-3xl border border-white/40 bg-white/95 p-6 text-[#1f1c16] shadow-[0_30px_70px_rgba(18,24,15,0.35)]"
-          id="mobile-nav"
+      <section
+        id="hero"
+        data-theme="hero"
+        ref={heroRef}
+        className="relative isolate flex min-h-screen items-center justify-center px-4 pb-20 pt-28 sm:px-8"
+      >
+        <div className="absolute inset-0 -z-30 overflow-hidden rounded-[3.5rem] border border-white/35 bg-white/35 shadow-[0_60px_120px_rgba(25,20,12,0.25)] backdrop-blur-3xl" />
+        <video
+          aria-hidden
+          autoPlay
+          className="absolute inset-0 -z-40 h-full w-full object-cover opacity-55"
+          loop
+          muted
+          playsInline
+          poster="https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1600&q=80"
         >
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#6d6859]" id="mobile-nav-title">
-              Navigate Verdant
-            </p>
-            <button
-              aria-label="Close navigation"
-              className="cursor-pointer text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              onClick={() => setIsNavOpen(false)}
-              type="button"
-            >
-              Close
-            </button>
-          </div>
-          <div className="mt-6 grid gap-4 text-sm font-semibold uppercase tracking-[0.35em]">
-            {navLinks.map((link) => {
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={`mobile-${link.id}`}
-                  aria-current={isActive ? "page" : undefined}
-                  className={`rounded-full px-4 py-3 text-center transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45] ${
-                    isActive
-                      ? "bg-[#8ac27d]/40 text-[#2f6337]"
-                      : "bg-[#eef3ea] text-[#2f6337] hover:bg-[#dcebd5]"
-                  }`}
-                  href={`#${link.id}`}
-                  onClick={handleNavLinkClick}
-                >
-                  {link.label}
-                </a>
-              );
-            })}
-            <button
-              className="flex cursor-pointer items-center justify-center gap-2 rounded-full bg-[#8ac27d] px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              onClick={handleReserveClick}
-              type="button"
-            >
-              Reserve
-              <IconArrowRight className="h-4 w-4" />
-            </button>
-          </div>
-        </aside>
-      )}
+          <source src="https://cdn.coverr.co/videos/coverr-slow-drizzle-over-gourmet-plating-2312/1080p.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 -z-20 bg-gradient-to-br from-black/45 via-black/25 to-transparent" />
 
-      {isModalOpen && (
-        <div aria-modal="true" className="fixed inset-0 z-50 flex items-center justify-center px-4 py-12" role="dialog">
-          <div className="relative w-full max-w-lg rounded-[32px] border border-white/40 bg-white/95 p-8 text-[#1f1c16] shadow-[0_40px_80px_rgba(18,24,15,0.35)] backdrop-blur-2xl">
-            <button
-              aria-label="Close reservation form"
-              className="absolute right-6 top-6 cursor-pointer text-sm font-semibold uppercase tracking-[0.3em] text-[#6d6859] transition hover:text-[#1f1c16] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-              onClick={() => setIsModalOpen(false)}
-              type="button"
+        <div className="relative z-10 flex w-full max-w-6xl flex-col gap-12 rounded-[2.75rem] border border-white/35 bg-white/55 p-6 text-white shadow-[0_50px_120px_rgba(25,24,20,0.25)] backdrop-blur-3xl sm:p-10 lg:p-16">
+          <header className="flex items-center justify-between gap-4">
+            <a
+              href="#hero"
+              className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.45em] text-white/85 sm:text-sm"
             >
-              Close
-            </button>
-            <div className="space-y-2 pr-10">
-              <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#6d6859]">Reserve a Table</p>
-              <h2 className="text-3xl font-semibold leading-tight">Tell us about your visit.</h2>
-              <p className="text-sm text-[#4e4a3f]">
-                We’ll confirm availability within the hour and share a custom tasting menu preview.
+              <span className="flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-white/20 text-base font-bold text-white shadow-inner">
+                <span className="sr-only">Verdant Atelier</span>
+                <IconLeaf className="h-5 w-5" />
+              </span>
+              Verdant Atelier
+            </a>
+
+            <div className="flex items-center gap-3">
+              <button
+                id="floating-menu-trigger"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={isNavOpen}
+                onClick={() => setIsNavOpen((open) => !open)}
+                className="flex items-center gap-2 rounded-full border border-white/30 bg-white/15 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+              >
+                Menu
+                <IconCaretDown className={`h-4 w-4 transition ${isNavOpen ? "rotate-180" : ""}`} />
+              </button>
+              <a
+                href="#contact"
+                className="hidden rounded-full border border-[#ffedc2]/40 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-2 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_15px_45px_rgba(167,142,70,0.4)] transition hover:shadow-[0_20px_55px_rgba(167,142,70,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffefce] sm:inline-flex"
+              >
+                Reserve
+              </a>
+            </div>
+          </header>
+
+          <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-4" data-animate>
+                <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.4em] text-white/80">
+                  Project Open
+                </span>
+                <h1 className="text-4xl font-semibold uppercase tracking-tight text-white sm:text-5xl lg:text-6xl">
+                  Where Flavor Meets Art
+                </h1>
+                <p className="max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
+                  Crafted with passion, plated with precision. Slow-dripped infusions, heritage grains, and luminous finishing oils compose the Verdant Atelier tasting experience.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4" data-animate="slide-left">
+                <a
+                  href="#highlights"
+                  className="group inline-flex items-center gap-3 rounded-full border border-white/25 bg-white/15 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                >
+                  Explore Our Menu
+                  <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(true)}
+                  className="group inline-flex items-center gap-3 rounded-full border border-white/25 bg-[#0b120e]/70 px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-white transition hover:bg-[#152019]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+                >
+                  Reserve an Evening
+                  <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+                </button>
+              </div>
+            </div>
+
+            <div className="relative mx-auto flex w-full max-w-sm flex-col gap-6">
+              <div
+                className="relative aspect-square overflow-hidden rounded-full border border-white/30 bg-white/10 shadow-[0_45px_90px_rgba(20,14,8,0.45)] backdrop-blur-2xl"
+                style={parallaxStyle}
+              >
+                <video
+                  aria-hidden
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="absolute inset-0 h-full w-full object-cover"
+                  poster="https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80"
+                >
+                  <source src="https://cdn.coverr.co/videos/coverr-doughnut-of-herbs-9980/1080p.mp4" type="video/mp4" />
+                </video>
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.35),transparent_60%)]" />
+              </div>
+
+              <ul className="grid gap-3" data-animate="float">
+                {heroHighlights.map((highlight, index) => (
+                  <li
+                    key={highlight.title}
+                    className="flex items-start gap-3 rounded-[1.5rem] border border-white/25 bg-white/12 px-4 py-3 text-white/90 backdrop-blur-xl transition hover:bg-white/18"
+                    style={cardParallax(index)}
+                  >
+                    <span className="mt-1 h-1.5 w-8 rounded-full bg-gradient-to-r from-white/40 to-white" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-semibold uppercase tracking-[0.3em]">{highlight.title}</p>
+                      <p className="text-xs text-white/75">{highlight.description}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="floating-menu-panel"
+          className={`absolute top-24 z-30 w-[clamp(16rem,90vw,18rem)] origin-top rounded-3xl border border-white/30 bg-white/15 p-4 text-xs font-semibold uppercase tracking-[0.35em] text-white shadow-[0_35px_75px_rgba(18,16,13,0.35)] backdrop-blur-2xl transition-all duration-300 ${
+            isNavOpen ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
+          } ${isMobileViewport ? "left-1/2 -translate-x-1/2" : "right-6"}`}
+        >
+          <nav className="flex flex-col gap-2">
+            {navLinks.map((link) => (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                aria-current={activeSection === link.id ? "page" : undefined}
+                className={`rounded-full border border-white/0 px-4 py-2 text-left text-[11px] tracking-[0.35em] text-white/80 transition hover:border-white/25 hover:bg-white/10 hover:text-white ${
+                  activeSection === link.id ? "border-white/30 bg-white/15 text-white" : ""
+                }`}
+                onClick={() => setIsNavOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </section>
+
+      <section
+        id="highlights"
+        data-theme="highlights"
+        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-24 text-[#1e1a16] sm:px-8"
+      >
+        <div className="rounded-[2.5rem] border border-white/60 bg-white/65 p-8 shadow-[0_45px_90px_rgba(30,24,16,0.15)] backdrop-blur-2xl" data-animate>
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#857752]">Chef&rsquo;s Curation</p>
+              <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">Rotating seasonal compositions</h2>
+            </div>
+            <p className="max-w-xl text-sm text-[#574d37]">
+              Each tasting course explores slow-fermented bases, gilded finishes, and botanicals balanced with warm citrus vapor.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {heroHighlights.map((highlight, index) => (
+              <article
+                key={`${highlight.title}-${index}`}
+                className="group relative overflow-hidden rounded-[2rem] border border-white/50 bg-white/60 p-6 shadow-[0_30px_65px_rgba(30,24,15,0.12)] backdrop-blur-xl"
+                data-animate={index === 0 ? "slide-right" : index === 1 ? "float" : "slide-left"}
+              >
+                <div className="relative mb-5 h-48 overflow-hidden rounded-[1.75rem] border border-white/55">
+                  <Image
+                    alt={highlight.title}
+                    src={highlight.image}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 80vw, 320px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1c150d]/60 via-transparent to-transparent" />
+                </div>
+                <h3 className="relative text-lg font-semibold text-[#1e1a16]">{highlight.title}</h3>
+                <p className="relative mt-2 text-sm text-[#5e533a]">{highlight.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="promise"
+        data-theme="promise"
+        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-24 text-[#1e1a16] sm:px-8"
+      >
+        <div className="grid gap-10 rounded-[2.75rem] border border-white/60 bg-white/65 p-8 shadow-[0_50px_110px_rgba(28,22,16,0.18)] backdrop-blur-2xl lg:grid-cols-[1.1fr_0.9fr] lg:p-12">
+          <div className="space-y-6" data-animate="slide-right">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#c4b48d]/30 bg-[#f0e6d0]/70">
+                <IconSparkles className="h-4 w-4 text-[#8a7a54]" />
+              </span>
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#867751]">Our Promise</p>
+            </div>
+            <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">
+              Rooted in sustainability, elevated through sensory storytelling.
+            </h2>
+            <p className="text-sm text-[#5c5137]">
+              Verdant Atelier reimagines coastal harvests through low-waste methods, solar kitchens, and regenerative partnerships with local growers.
+            </p>
+            <ul className="grid gap-4 text-sm text-[#5c5137] sm:grid-cols-2">
+              {promiseHighlights.map((item, index) => (
+                <li
+                  key={item}
+                  className="rounded-[1.75rem] border border-white/55 bg-white/70 px-5 py-4"
+                  data-animate={index % 2 === 0 ? "slide-right" : "slide-left"}
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="relative overflow-hidden rounded-[2.25rem] border border-white/60 bg-gradient-to-br from-[#f2ead5]/70 to-[#d8c6a4]/50 p-8 text-[#1e1a16] shadow-[0_45px_90px_rgba(27,21,14,0.2)]" data-animate="slide-left">
+            <div className="space-y-4">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#7a6a47]">Signature Pairing</p>
+              <h3 className="text-2xl font-semibold">Seared scallop with olive smoke veil</h3>
+              <p className="text-sm text-[#5e533a]">
+                Served beneath a glass cloche filled with citrus wood aroma, unveiled tableside for a theatre of scent and light.
+              </p>
+              <Image
+                src="https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=900&q=80"
+                alt="Seared scallop with herb garnish"
+                width={640}
+                height={480}
+                className="h-56 w-full rounded-[1.75rem] object-cover"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="mission"
+        data-theme="mission"
+        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-24 text-[#1e1a16] sm:px-8"
+      >
+        <div className="rounded-[2.5rem] border border-white/60 bg-white/60 p-8 shadow-[0_45px_100px_rgba(25,20,14,0.17)] backdrop-blur-2xl" data-animate>
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-3xl space-y-6">
+              <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#877851]">Mission</p>
+              <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">
+                Our mission is to orchestrate an edible gallery that celebrates terroir, craftsmanship, and community.
+              </h2>
+              <p className="text-sm text-[#5c5137]">
+                Each evening is choreographed through multi-sensory pacing, from candlelit amuse-bouches to ember-roasted finales served amid whispers of citrus vapor.
               </p>
             </div>
-            <form className="mt-6 grid gap-4">
-              <div className="grid gap-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="reservation-name">
-                  Name
-                </label>
+            <div className="flex flex-col gap-4 rounded-[2rem] border border-white/60 bg-white/65 p-6 text-sm text-[#5c5137] shadow-inner" data-animate="slide-left">
+              {missionDetails.map((detail) => (
+                <div key={detail.label}>
+                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#877851]">{detail.label}</p>
+                  <p>{detail.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        data-theme="contact"
+        className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 pb-28 pt-16 text-[#1e1a16] sm:px-8"
+      >
+        <div className="grid gap-10 rounded-[2.75rem] border border-white/65 bg-white/70 p-8 shadow-[0_50px_110px_rgba(24,18,12,0.2)] backdrop-blur-2xl lg:grid-cols-[0.9fr_1.1fr] lg:p-12" data-animate>
+          <div className="space-y-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#867751]">Contact</p>
+            <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">Reserve an intimate seating</h2>
+            <p className="text-sm text-[#5c5137]">
+              Share your occasion and our hospitality team will create a tailored tasting with curated wine pairings and ambient design.
+            </p>
+            <div className="space-y-3 text-sm text-[#5c5137]">
+              {contactDetails.map((detail) => (
+                <p key={detail.title} className="flex items-start gap-3 text-sm text-[#5c5137]">
+                  <span className="mt-0.5 flex h-10 w-10 items-center justify-center rounded-full border border-[#c4b48d]/30 bg-[#f0e6d0]/70">
+                    <detail.icon className="h-4 w-4 text-[#405e36]" />
+                  </span>
+                  <span>
+                    <span className="block text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]">{detail.title}</span>
+                    {detail.description}
+                  </span>
+                </p>
+              ))}
+              <a className="group inline-flex items-center gap-2 text-[#405e36] transition hover:text-[#2a4126]" href="tel:+12075550123">
+                <IconPhone className="h-4 w-4" />
+                +1 (207) 555-0123
+                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+              </a>
+              <a className="group inline-flex items-center gap-2 text-[#405e36] transition hover:text-[#2a4126]" href="mailto:hello@verdantatelier.com">
+                <IconMail className="h-4 w-4" />
+                hello@verdantatelier.com
+                <IconArrowRight className="h-4 w-4 opacity-0 transition group-hover:translate-x-0.5 group-hover:opacity-100" />
+              </a>
+            </div>
+            <button
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full bg-[#8ac27d] px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169]"
+              type="button"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Reserve a Table
+              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </button>
+          </div>
+          <form className="grid gap-4 text-sm text-[#5c5137]" data-animate="slide-left">
+            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+              Name
+              <input
+                className="h-12 rounded-full border border-[#d6c9a4]/60 bg-white/80 px-5 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                placeholder="Your name"
+                type="text"
+              />
+            </label>
+            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+              Email
+              <input
+                className="h-12 rounded-full border border-[#d6c9a4]/60 bg-white/80 px-5 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                placeholder="Your email"
+                type="email"
+              />
+            </label>
+            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+              Occasion
+              <input
+                className="h-12 rounded-full border border-[#d6c9a4]/60 bg-white/80 px-5 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                placeholder="Celebration, tasting, private chef"
+                type="text"
+              />
+            </label>
+            <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+              Message
+              <textarea
+                rows={4}
+                className="rounded-3xl border border-[#d6c9a4]/60 bg-white/80 px-5 py-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                placeholder="Share party size, dietary notes, or inspiration"
+              />
+            </label>
+            <button
+              type="submit"
+              className="mt-2 inline-flex items-center justify-center rounded-full border border-[#ffe7b8]/50 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_20px_55px_rgba(167,142,70,0.45)] transition hover:shadow-[0_25px_65px_rgba(167,142,70,0.55)]"
+            >
+              Submit Request
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          <div className="relative z-10 w-full max-w-lg rounded-[2.5rem] border border-white/25 bg-white/85 p-8 text-[#1e1a16] shadow-[0_40px_110px_rgba(18,16,13,0.45)] backdrop-blur-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold uppercase tracking-[0.4em] text-[#3b5b34]">Reserve Table</h3>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-full border border-transparent px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-[#6d6859] transition hover:border-[#d6c9a4] hover:bg-white/70"
+              >
+                Close
+              </button>
+            </div>
+            <form className="mt-6 grid gap-4 text-sm text-[#5c5137]">
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                Name
                 <input
-                  className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                  id="reservation-name"
-                  name="reservation-name"
+                  className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
                   placeholder="Your name"
                   type="text"
                 />
-              </div>
-              <div className="grid gap-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="reservation-email">
-                  Email
-                </label>
+              </label>
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                Email
                 <input
-                  className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                  id="reservation-email"
-                  name="reservation-email"
-                  placeholder="you@email.com"
+                  className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                  placeholder="Email address"
                   type="email"
                 />
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                <div className="grid gap-2">
-                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="reservation-date">
-                    Date
-                  </label>
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                  Date
                   <input
-                    className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                    id="reservation-date"
-                    name="reservation-date"
+                    className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
                     type="date"
                   />
-                </div>
-                <div className="grid gap-2">
-                  <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="reservation-party">
-                    Party Size
-                  </label>
-                  <input
-                    className="h-12 rounded-full border border-[#d9d5ca] bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                    id="reservation-party"
-                    min={1}
-                    name="reservation-party"
-                    type="number"
-                  />
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-[#6d6859]" htmlFor="reservation-notes">
-                  Special Requests
                 </label>
-                <textarea
-                  className="min-h-[120px] rounded-3xl border border-[#d9d5ca] bg-white/90 px-5 py-4 text-sm text-[#1f1c16] placeholder:text-[#9a9588] focus:border-[#8ac27d] focus:outline-none"
-                  id="reservation-notes"
-                  name="reservation-notes"
-                  placeholder="Allergies, celebrations, preferences"
-                />
+                <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                  Guests
+                  <input
+                    className="h-11 rounded-full border border-[#d6c9a4]/60 bg-white px-4 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                    type="number"
+                    min={1}
+                  />
+                </label>
               </div>
+              <label className="grid gap-2 text-xs font-semibold uppercase tracking-[0.35em]">
+                Notes
+                <textarea
+                  rows={4}
+                  className="rounded-3xl border border-[#d6c9a4]/60 bg-white px-4 py-3 text-sm text-[#1e1a16] placeholder:text-[#9c8c63] focus:border-[#405e36] focus:outline-none"
+                  placeholder="Share celebration details or dietary notes"
+                />
+              </label>
               <button
-                className="group h-12 cursor-pointer rounded-full border border-transparent bg-[#8ac27d] text-xs font-semibold uppercase tracking-[0.35em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
                 type="submit"
+                className="mt-2 inline-flex items-center justify-center rounded-full border border-[#ffe7b8]/50 bg-gradient-to-r from-[#3b5b34] via-[#7f903a] to-[#d5bb62] px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.35em] text-[#1b150b] shadow-[0_20px_55px_rgba(167,142,70,0.45)] transition hover:shadow-[0_25px_65px_rgba(167,142,70,0.55)]"
               >
-                Submit Request
-                <IconArrowRight className="ml-2 inline h-4 w-4 transition group-hover:translate-x-0.5" />
+                Confirm Reservation
               </button>
             </form>
           </div>
