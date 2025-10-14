@@ -15,22 +15,22 @@ const navLinks = [
 
 const heroHighlights = [
   {
-    title: "Chef’s Garden Tasting",
-    description: "Eight-course menu celebrating biodynamic vegetables and heritage grains.",
+    title: "Fire-Roasted Langoustine",
+    description: "Brushed with smoked beurre monté, fennel pollen, and charred Meyer lemon pearls.",
     image:
       "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=640&q=80",
   },
   {
-    title: "Wood-Fired Evenings",
-    description: "Oak-fired sourdough pizzas with charred citrus oil and smoked sea salt.",
+    title: "Velvet Truffle Cappelletti",
+    description: "Hand-folded pasta in parmesan brodo, finished with aged balsamic and porcini oil.",
     image:
-      "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?auto=format&fit=crop&w=640&q=80",
+      "https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=640&q=80",
   },
   {
-    title: "Botanical Brunch",
-    description: "Green goddess waffles, microherb salads, and petal-garnished spritzes.",
+    title: "Amber Patisserie Tableau",
+    description: "Caramelia mousse, brûléed figs, and toasted pistachio praline in warm candlelight.",
     image:
-      "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=640&q=80",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=640&q=80",
   },
 ];
 
@@ -210,205 +210,54 @@ function IconArrowRight(props: IconProps) {
   );
 }
 
-function RotatingDonut() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    const canvas = canvasRef.current;
-    if (!container || !canvas) return;
-
-    const context = canvas.getContext("2d");
-    if (!context) return;
-
-    const sprinkleColors = ["#ffc857", "#6bdad5", "#ff90b3", "#ffffff", "#c8f26a", "#ff8fab"];
-    const glazePalette = ["#fff1f7", "#ffe0ef", "#ffc9dd", "#ffb3ce", "#ff9bc0", "#ff86b1", "#f86f9d"];
-
-    const sprinkles = Array.from({ length: 85 }, (_, index) => ({
-      theta: Math.random() * Math.PI * 2,
-      phi: Math.random() * Math.PI * 2,
-      wobble: Math.random() * 0.4 + 0.4,
-      color: sprinkleColors[index % sprinkleColors.length],
-    }));
-
-    let width = 0;
-    let height = 0;
-    const dpr = window.devicePixelRatio || 1;
-
-    const resizeCanvas = () => {
-      const rect = container.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      context.setTransform(1, 0, 0, 1, 0, 0);
-      context.scale(dpr, dpr);
-    };
-
-    resizeCanvas();
-
-    let animationFrame = 0;
-    let bufferWidth = 0;
-    let bufferHeight = 0;
-    let depthBuffer = new Float32Array(0);
-
-    const ensureBuffer = () => {
-      const w = Math.max(1, Math.floor(width));
-      const h = Math.max(1, Math.floor(height));
-      if (w !== bufferWidth || h !== bufferHeight) {
-        bufferWidth = w;
-        bufferHeight = h;
-        depthBuffer = new Float32Array(w * h);
-      } else {
-        depthBuffer.fill(0);
-      }
-    };
-
-    let angleA = 0;
-    let angleB = 0;
-
-    const render = () => {
-      animationFrame = requestAnimationFrame(render);
-      if (width <= 0 || height <= 0) {
-        return;
-      }
-
-      ensureBuffer();
-
-      context.clearRect(0, 0, width, height);
-      const cosA = Math.cos(angleA);
-      const sinA = Math.sin(angleA);
-      const cosB = Math.cos(angleB);
-      const sinB = Math.sin(angleB);
-
-      const R1 = 1.08;
-      const R2 = 2.7;
-      const K2 = 7;
-      const K1 = 130;
-
-      for (let theta = 0; theta < Math.PI * 2; theta += 0.21) {
-        const cosTheta = Math.cos(theta);
-        const sinTheta = Math.sin(theta);
-        for (let phi = 0; phi < Math.PI * 2; phi += 0.07) {
-          const cosPhi = Math.cos(phi);
-          const sinPhi = Math.sin(phi);
-
-          const circleX = R2 + R1 * cosTheta;
-          const circleY = R1 * sinTheta;
-
-          const x = circleX * (cosB * cosPhi + sinA * sinB * sinPhi) - circleY * cosA * sinB;
-          const y = circleX * (sinB * cosPhi - sinA * cosB * sinPhi) + circleY * cosA * cosB;
-          const z = cosA * circleX * sinPhi + circleY * sinA;
-
-          const ooz = 1 / (z + K2);
-          const xp = Math.floor(width / 2 + K1 * ooz * x);
-          const yp = Math.floor(height / 2 - K1 * ooz * y);
-
-          if (xp < 0 || xp >= bufferWidth || yp < 0 || yp >= bufferHeight) {
-            continue;
-          }
-
-          const bufferIndex = xp + bufferWidth * yp;
-          if (ooz <= depthBuffer[bufferIndex]) {
-            continue;
-          }
-
-          depthBuffer[bufferIndex] = ooz;
-
-          const luminance =
-            cosPhi * cosTheta * sinB -
-            cosA * cosTheta * sinPhi -
-            sinA * sinTheta +
-            cosB * (cosA * sinTheta - cosTheta * sinA * sinPhi);
-
-          const normalized = Math.min(1, Math.max(0, (luminance + 1.8) / 3.4));
-          const colorIndex = Math.min(glazePalette.length - 1, Math.floor(normalized * glazePalette.length));
-          const fillColor = glazePalette[colorIndex];
-
-          context.globalAlpha = 0.92;
-          context.fillStyle = fillColor;
-          context.fillRect(xp, yp, 3.1, 3.1);
-        }
-      }
-
-      context.globalAlpha = 1;
-
-      sprinkles.forEach((sprinkle) => {
-        const theta = sprinkle.theta + angleA * 0.7;
-        const phi = sprinkle.phi + angleB * 0.7;
-        const cosTheta = Math.cos(theta);
-        const sinTheta = Math.sin(theta);
-        const cosPhi = Math.cos(phi);
-        const sinPhi = Math.sin(phi);
-
-        const circleX = R2 + R1 * cosTheta;
-        const circleY = R1 * sinTheta;
-
-        const x = circleX * (cosB * cosPhi + sinA * sinB * sinPhi) - circleY * cosA * sinB;
-        const y = circleX * (sinB * cosPhi - sinA * cosB * sinPhi) + circleY * cosA * cosB;
-        const z = cosA * circleX * sinPhi + circleY * sinA;
-
-        const ooz = 1 / (z + K2);
-        const xp = width / 2 + K1 * ooz * x;
-        const yp = height / 2 - K1 * ooz * y;
-
-        if (xp < -20 || xp > width + 20 || yp < -20 || yp > height + 20) {
-          return;
-        }
-
-        const sprinkleSize = Math.max(1.5, 4.4 * ooz * 90 * sprinkle.wobble);
-        context.save();
-        context.translate(xp, yp);
-        context.rotate(phi + theta);
-        context.fillStyle = sprinkle.color;
-        context.globalAlpha = 0.88;
-        context.fillRect(-sprinkleSize / 2, -sprinkleSize / 6, sprinkleSize, sprinkleSize / 3);
-        context.restore();
-      });
-
-      context.globalAlpha = 1;
-
-      angleA += 0.012;
-      angleB += 0.018;
-    };
-
-    render();
-
-    const handleResize = () => {
-      resizeCanvas();
-      ensureBuffer();
-    };
-
-    let resizeObserver: ResizeObserver | null = null;
-    if (typeof ResizeObserver !== "undefined") {
-      resizeObserver = new ResizeObserver(handleResize);
-      resizeObserver.observe(container);
-    } else {
-      window.addEventListener("resize", handleResize);
-    }
-
-    return () => {
-      cancelAnimationFrame(animationFrame);
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      } else {
-        window.removeEventListener("resize", handleResize);
-      }
-    };
-  }, []);
-
-  return (
-    <div aria-hidden className="h-full w-full" ref={containerRef}>
-      <canvas className="h-full w-full" ref={canvasRef} />
-    </div>
-  );
-}
-
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("hero");
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [scrollDepth, setScrollDepth] = useState(0);
+
+  useEffect(() => {
+    const handlePointerMove = (event: PointerEvent) => {
+      const { innerHeight, innerWidth } = window;
+      const x = (event.clientX / innerWidth - 0.5) * 32;
+      const y = (event.clientY / innerHeight - 0.5) * 18;
+      setParallaxOffset({ x, y });
+    };
+
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = heroRef.current;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || 1;
+      const rawProgress = (viewportHeight - rect.top) / (viewportHeight + rect.height);
+      const progress = Math.min(1, Math.max(0, rawProgress));
+      setScrollDepth(progress);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  const getParallaxStyle = (intensity: number, offsetY = 0) => ({
+    transform: `translate3d(${parallaxOffset.x * intensity}px, ${
+      parallaxOffset.y * intensity + scrollDepth * intensity * 40 + offsetY
+    }px, 0)`,
+  });
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -551,79 +400,98 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="relative isolate flex min-h-[90vh] items-center overflow-hidden px-4 pb-24 pt-32 sm:px-8 lg:min-h-screen" id="hero">
+      <section
+        ref={heroRef}
+        className="relative isolate flex min-h-[92vh] items-center overflow-hidden px-4 pb-24 pt-32 sm:px-8 lg:min-h-screen"
+        id="hero"
+      >
         <video
           aria-hidden
           autoPlay
-          className="absolute inset-0 -z-20 h-full w-full object-cover"
+          className="absolute inset-0 -z-30 h-full w-full object-cover"
           loop
           muted
           playsInline
-          poster="https://images.unsplash.com/photo-1543353071-10c8ba85a904?auto=format&fit=crop&w=1600&q=60"
+          poster="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=60"
           src="https://cdn.coverr.co/videos/coverr-gourmet-chef-plating-a-fine-dining-dish-7321/1080p.mp4"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[#fff7ef]/60 via-[#f2fff4]/35 to-white/20" />
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,#1a1712_0%,rgba(18,13,8,0.65)_40%,rgba(12,9,6,0.35)_65%,transparent_90%)]" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(6,5,4,0.55)] via-[rgba(16,12,9,0.4)] to-transparent" />
 
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-16">
-          <div className="grid gap-12 text-white lg:grid-cols-[1.15fr_0.9fr] lg:items-end">
-            <div className="space-y-8" data-animate>
-              <p className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/20 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-white/80">
-                <IconSparkles className="h-4 w-4" />
-                Slow dining · Farm fresh · Botanical cocktails
-              </p>
-              <h1 className="text-4xl font-semibold leading-tight drop-shadow-[0_15px_35px_rgba(20,24,18,0.35)] sm:text-5xl lg:text-6xl xl:text-7xl">
-                Taste the season with every plate and pour.
-              </h1>
-              <p className="max-w-2xl text-base text-white/85 sm:text-lg">
-                Verdant Kitchen celebrates the rhythm of nature with a plant-forward menu, small-batch ferments, and wood-fired favorites.
-              </p>
-              <form className="flex flex-col gap-3 sm:flex-row" data-animate="slide-right">
-                <input
-                  className="h-12 flex-1 rounded-full border border-white/80 bg-white/90 px-5 text-sm text-[#1f1c16] placeholder:text-[#6d6859] focus:border-[#8ac27d] focus:outline-none focus:ring-2 focus:ring-[#8ac27d]/40"
-                  placeholder="Enter your email for supper club updates"
-                  type="email"
-                />
-                <button
-                  className="group flex h-12 cursor-pointer items-center justify-center gap-2 rounded-full border border-transparent bg-[#8ac27d] px-6 text-xs font-semibold uppercase tracking-[0.3em] text-[#1f1c16] transition hover:bg-[#76b169] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3b7a45]"
-                  type="submit"
-                >
-                  Request Invite
-                  <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
-                </button>
-              </form>
-            </div>
+        <div className="pointer-events-none absolute inset-0 -z-5">
+          <div
+            className="absolute left-[-8%] top-32 h-64 w-64 rounded-full bg-[radial-gradient(circle_at_top,#c8a97a_0%,rgba(83,56,30,0.7)_60%,transparent_100%)] opacity-40 blur-3xl sm:h-80 sm:w-80"
+            style={getParallaxStyle(0.35)}
+          />
+          <div
+            className="absolute right-[-10%] top-20 h-72 w-72 rounded-full bg-[radial-gradient(circle_at_top,#f2d6b0_0%,rgba(138,92,38,0.55)_55%,transparent_100%)] opacity-40 blur-3xl sm:h-96 sm:w-96"
+            style={getParallaxStyle(-0.3)}
+          />
+          <div
+            className="absolute inset-x-0 bottom-[-35%] h-[45vh] bg-gradient-to-t from-[#f1ede4] via-[#f1ede4]/50 to-transparent"
+            style={getParallaxStyle(0.1)}
+          />
+        </div>
 
-            <div className="flex flex-col gap-6" data-animate="slide-left">
-              <div className="relative overflow-hidden rounded-[42px] border border-white/25 bg-white/20 p-6 shadow-[0_32px_90px_rgba(16,20,14,0.35)] backdrop-blur-3xl">
-                <div className="pointer-events-none absolute inset-0 rounded-[42px] bg-gradient-to-br from-white/20 via-transparent to-white/10" />
-                <div className="relative mx-auto h-[220px] w-full max-w-[360px] sm:h-[260px]">
-                  <RotatingDonut />
+        <div
+          className="pointer-events-none absolute left-4 top-32 hidden rounded-full border border-white/25 bg-white/10 px-5 py-2 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/70 shadow-[0_20px_60px_rgba(12,10,6,0.4)] backdrop-blur-xl sm:block"
+          data-animate="slide-right"
+        >
+          Verdant Atelier
+        </div>
+
+        <div className="mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center text-white">
+          <div className="flex flex-col items-center gap-6" data-animate>
+            <p className="text-xs font-semibold uppercase tracking-[0.65em] text-white/70 sm:text-sm">
+              Crafted with obsidian plates & warm brass light
+            </p>
+            <h1 className="text-4xl font-semibold leading-tight drop-shadow-[0_20px_60px_rgba(12,9,6,0.65)] sm:text-5xl lg:text-6xl">
+              Where Flavor Meets Art
+            </h1>
+            <p className="max-w-2xl text-sm text-white/80 sm:text-base">
+              Crafted with passion, plated with precision. Each course captures the glow of the kitchen hearth and the poetry of
+              modern gastronomy.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-center gap-3 sm:flex-row" data-animate="slide-left">
+            <a
+              className="group relative inline-flex cursor-pointer items-center gap-3 overflow-hidden rounded-full border border-white/25 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white shadow-[0_28px_80px_rgba(10,8,5,0.55)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d6a651]"
+              href="#highlights"
+            >
+              <span className="absolute inset-0 bg-gradient-to-r from-[#2f6f4f] via-[#3f845c] to-[#d7a74d] opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+              <span className="relative flex items-center gap-3">
+                Explore Our Menu
+                <IconArrowRight className="h-4 w-4" />
+              </span>
+            </a>
+            <button
+              className="group inline-flex cursor-pointer items-center gap-2 rounded-full border border-white/30 bg-white/10 px-8 py-3 text-xs font-semibold uppercase tracking-[0.42em] text-white/80 transition hover:bg-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+              onClick={handleReserveClick}
+              type="button"
+            >
+              Reserve an Evening
+              <IconArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+            </button>
+          </div>
+
+          <div className="grid w-full gap-4 sm:grid-cols-3" data-animate="float">
+            {heroHighlights.map((highlight, index) => (
+              <article
+                key={highlight.title}
+                className="relative flex flex-col gap-3 overflow-hidden rounded-[26px] border border-white/20 bg-white/10 p-4 text-left text-white shadow-[0_25px_90px_rgba(10,8,5,0.5)] backdrop-blur-2xl transition hover:-translate-y-1"
+                style={getParallaxStyle(0.12 + index * 0.06)}
+              >
+                <div className="relative h-36 w-full overflow-hidden rounded-[20px] border border-white/25">
+                  <Image alt={highlight.title} fill className="object-cover" sizes="(max-width: 768px) 80vw, 260px" src={highlight.image} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(12,9,6,0.55)] via-transparent to-transparent" />
                 </div>
-                <div className="mt-6 space-y-2 text-center">
-                  <p className="text-xs font-semibold uppercase tracking-[0.35em] text-white/70">House-made artistry</p>
-                  <p className="text-sm text-white/80">
-                    Every dessert is hand-finished with playful textures and botanical glazes straight from our pastry lab.
-                  </p>
+                <div className="space-y-2">
+                  <h3 className="text-base font-semibold text-white">{highlight.title}</h3>
+                  <p className="text-xs text-white/75">{highlight.description}</p>
                 </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                {heroHighlights.map((highlight) => (
-                  <article
-                    key={highlight.title}
-                    className="flex items-center gap-4 rounded-3xl border border-white/25 bg-white/25 p-4 text-left shadow-[0_24px_60px_rgba(15,19,12,0.25)] backdrop-blur-2xl transition hover:-translate-y-1"
-                  >
-                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-[24px] border border-white/40 bg-white/30">
-                      <Image alt={highlight.title} fill className="object-cover" src={highlight.image} sizes="80px" />
-                    </div>
-                    <div className="space-y-1">
-                      <h3 className="text-base font-semibold text-white">{highlight.title}</h3>
-                      <p className="text-xs text-white/75">{highlight.description}</p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
