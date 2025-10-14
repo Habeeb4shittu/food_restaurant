@@ -1,0 +1,45 @@
+<svg width="220" height="220" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="220" height="220" rx="48" fill="url(#paint0_radial_tasting)" />
+  <g filter="url(#filter0_di_tasting)">
+    <circle cx="110" cy="110" r="70" fill="url(#paint1_radial_tasting)" />
+    <circle cx="110" cy="110" r="40" fill="url(#paint2_radial_tasting)" />
+  </g>
+  <path d="M110 58C129 58 144 73 144 92C144 111 129 126 110 126C91 126 76 111 76 92C76 73 91 58 110 58Z" fill="url(#paint3_radial_tasting)" />
+  <path d="M143 132C155.15 132 165 141.85 165 154C165 166.15 155.15 176 143 176C130.85 176 121 166.15 121 154C121 141.85 130.85 132 143 132Z" fill="url(#paint4_radial_tasting)" />
+  <path d="M84 132C96.1503 132 106 141.85 106 154C106 166.15 96.1503 176 84 176C71.8497 176 62 166.15 62 154C62 141.85 71.8497 132 84 132Z" fill="url(#paint5_radial_tasting)" />
+  <defs>
+    <radialGradient id="paint0_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(60 30) rotate(45) scale(220)">
+      <stop stop-color="#f6f2e7" />
+      <stop offset="1" stop-color="#e6eee0" />
+    </radialGradient>
+    <filter id="filter0_di_tasting" x="20" y="20" width="180" height="180" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+      <feOffset dy="8" />
+      <feGaussianBlur stdDeviation="8" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.223529 0 0 0 0 0.34902 0 0 0 0 0.207843 0 0 0 0.15 0" />
+      <feBlend mode="normal" in2="shape" result="effect1_innerShadow_tasting" />
+    </filter>
+    <radialGradient id="paint1_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(80 75) rotate(60) scale(120)">
+      <stop stop-color="#e6f0df" />
+      <stop offset="1" stop-color="#c6d8c1" />
+    </radialGradient>
+    <radialGradient id="paint2_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(120 130) rotate(60) scale(80)">
+      <stop stop-color="#fcf9f4" />
+      <stop offset="1" stop-color="#e4e8da" />
+    </radialGradient>
+    <radialGradient id="paint3_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(102 64) rotate(70) scale(70)">
+      <stop stop-color="#b5d57d" />
+      <stop offset="1" stop-color="#5e7d3a" />
+    </radialGradient>
+    <radialGradient id="paint4_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(139 138) rotate(65) scale(60)">
+      <stop stop-color="#f2ae68" />
+      <stop offset="1" stop-color="#d47130" />
+    </radialGradient>
+    <radialGradient id="paint5_radial_tasting" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(78 138) rotate(65) scale(60)">
+      <stop stop-color="#8dbb57" />
+      <stop offset="1" stop-color="#4c6b2b" />
+    </radialGradient>
+  </defs>
+</svg>
