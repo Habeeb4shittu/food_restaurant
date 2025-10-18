@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 import { SparklesIcon } from "../icons";
 
 type PromiseSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
+  sectionRef: RefObject<HTMLDivElement>;
   highlights: string[];
 };
 

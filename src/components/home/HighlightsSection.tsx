@@ -4,7 +4,7 @@ import type { RefObject } from "react";
 import type { HeroHighlight } from "./types";
 
 type HighlightsSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
+  sectionRef: RefObject<HTMLDivElement>;
   highlights: HeroHighlight[];
 };
 

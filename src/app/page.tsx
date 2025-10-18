@@ -25,11 +25,11 @@ import type { BackgroundConfig, SectionKey } from "../components/home/types";
 type ParallaxVector = { x: number; y: number };
 
 export default function Home() {
-  const heroSectionRef = useRef<HTMLDivElement | null>(null);
-  const highlightsSectionRef = useRef<HTMLElement | null>(null);
-  const promiseSectionRef = useRef<HTMLElement | null>(null);
-  const missionSectionRef = useRef<HTMLElement | null>(null);
-  const contactSectionRef = useRef<HTMLElement | null>(null);
+  const heroSectionRef = useRef<HTMLDivElement>(null!);
+  const highlightsSectionRef = useRef<HTMLDivElement>(null!);
+  const promiseSectionRef = useRef<HTMLDivElement>(null!);
+  const missionSectionRef = useRef<HTMLDivElement>(null!);
+  const contactSectionRef = useRef<HTMLDivElement>(null!);
   const backgroundVideosRef = useRef<Record<SectionKey, HTMLVideoElement | null>>({
     hero: null,
     highlights: null,
