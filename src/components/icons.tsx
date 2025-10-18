@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef } from "react";
-import type { SVGProps } from "react";
+import type { SVGProps, ReactNode } from "react";
 
 // The stroke paths below mirror the Lucide icon set so the UI can use the same
 // visual language without bringing the dependency into the bundle. Lucide icons
@@ -9,7 +9,7 @@ import type { SVGProps } from "react";
 
 type IconProps = SVGProps<SVGSVGElement>;
 
-const createIcon = (paths: JSX.Element) =>
+const createIcon = (paths: ReactNode) =>
   forwardRef<SVGSVGElement, IconProps>(function Icon(props, ref) {
     return (
       <svg
