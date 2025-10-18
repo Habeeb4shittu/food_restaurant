@@ -5,9 +5,9 @@ html {
 }
 
 :root {
-  --background: #eef0ec;
-  --foreground: #16140f;
-  --accent: #3c5f3a;
+  --background: #fff7f7;
+  --foreground: #2d1814;
+  --accent: #0f7a38;
   --font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -20,15 +20,16 @@ html {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0f1610;
-    --foreground: #f2f6ed;
-    --accent: #8dc07a;
+    --background: #1a0506;
+    --foreground: #fdf5f5;
+    --accent: #69d68a;
   }
 }
 
 body {
   margin: 0;
-  background: #f5efe2;
+  background: radial-gradient(circle at 20% 15%, rgba(255, 227, 227, 0.55), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(206, 244, 214, 0.45), transparent 62%), #fff9f9;
   color: var(--foreground);
   font-family: var(--font-body);
   min-height: 100vh;
@@ -80,10 +81,10 @@ body {
   aspect-ratio: 1 / 1;
   border-radius: 9999px;
   overflow: hidden;
-  border: 1px solid rgba(255, 228, 190, 0.35);
-  background: radial-gradient(circle at 30% 30%, rgba(255, 248, 230, 0.2), transparent 60%),
-    rgba(20, 14, 8, 0.25);
-  box-shadow: 0 45px 90px rgba(20, 14, 8, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 198, 198, 0.45);
+  background: radial-gradient(circle at 30% 30%, rgba(255, 214, 214, 0.25), transparent 60%),
+    rgba(31, 8, 8, 0.35);
+  box-shadow: 0 45px 90px rgba(123, 18, 25, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(18px);
 }
 
@@ -91,7 +92,7 @@ body {
   position: absolute;
   inset: -15%;
   border-radius: inherit;
-  background: radial-gradient(circle, rgba(255, 206, 150, 0.5) 0%, rgba(255, 239, 208, 0.25) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(226, 6, 19, 0.5) 0%, rgba(255, 214, 214, 0.25) 40%, transparent 70%);
   mix-blend-mode: screen;
   pointer-events: none;
 }
@@ -176,7 +177,7 @@ body {
   height: 18rem;
   top: -5rem;
   right: 6%;
-  background: radial-gradient(circle, rgba(255, 206, 150, 0.45) 0%, rgba(255, 206, 150, 0.08) 65%, transparent 95%);
+  background: radial-gradient(circle, rgba(226, 6, 19, 0.42) 0%, rgba(226, 6, 19, 0.08) 65%, transparent 95%);
 }
 
 .hero-glow--two {
@@ -184,7 +185,7 @@ body {
   height: 14rem;
   bottom: -4rem;
   left: 8%;
-  background: radial-gradient(circle, rgba(110, 176, 137, 0.4) 0%, rgba(110, 176, 137, 0.08) 60%, transparent 100%);
+  background: radial-gradient(circle, rgba(15, 122, 56, 0.38) 0%, rgba(15, 122, 56, 0.08) 60%, transparent 100%);
 }
 
 @media (max-width: 640px) {

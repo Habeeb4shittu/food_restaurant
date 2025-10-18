@@ -5,14 +5,14 @@ import { ArrowRightIcon, SparklesIcon, StarIcon } from "../icons";
 import type { HeroHighlight } from "./types";
 
 const HERO_PRIMARY_COPY = {
-  eyebrow: "Verdant Atelier",
-  headline: "Where Flavor Meets Art",
+  eyebrow: "İstanbul Piliç",
+  headline: "Lezzetin Sanatla Buluştuğu Yer",
   subcopy:
-    "Crafted with passion, plated with precision. Slow-dripped infusions, ember-kissed herbs, and velvet reductions compose every luminous course.",
+    "Tutkuyla marine edilen piliçlerimiz, odun ateşinin sıcaklığı ve taze otların aromasıyla tabağınızda yeni bir İstanbul hikâyesi anlatır.",
 };
 
 type HeroSectionProps = {
-  sectionRef: React.RefObject<HTMLDivElement | null>;
+  sectionRef: RefObject<HTMLDivElement>;
   highlights: HeroHighlight[];
   parallaxStyle: CSSProperties;
   glowParallax: (multiplier: number, depth: number) => CSSProperties;
@@ -39,12 +39,12 @@ export function HeroSection({
       ref={sectionRef}
       className="relative flex min-h-screen items-center justify-center px-4 pb-24 pt-32 sm:px-8"
     >
-      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#1b140d]/55 via-[#1c150e]/20 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 -z-10 h-[40vh] bg-gradient-to-t from-[#120c06]/65 via-transparent to-transparent" />
+      <div className="absolute inset-0 -z-20 bg-gradient-to-b from-[#2b0d0d]/55 via-[#1c150e]/25 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 -z-10 h-[40vh] bg-gradient-to-t from-[#220808]/65 via-transparent to-transparent" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-12 text-center text-white sm:gap-14">
         <div className="flex flex-col items-center gap-4" data-animate>
-          <span className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.45em] text-white/80">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/35 bg-white/15 px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.45em] text-white/85">
             <StarIcon className="h-4 w-4 text-white/75" />
             {HERO_PRIMARY_COPY.eyebrow}
           </span>
@@ -59,17 +59,17 @@ export function HeroSection({
         <div className="flex flex-wrap items-center justify-center gap-4" data-animate="slide-left">
           <a
             href="#highlights"
-            className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#1f6f4b] via-[#9d8641] to-[#d9b45f] px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-[#181006] shadow-[0_25px_60px_rgba(174,132,52,0.45)] transition hover:shadow-[0_28px_70px_rgba(174,132,52,0.6)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f6e5b2]"
+            className="group inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-[#0f7a38] via-[#1fb355] to-[#7bd97f] px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-white shadow-[0_25px_60px_rgba(15,122,56,0.35)] transition hover:shadow-[0_28px_70px_rgba(15,122,56,0.5)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0f7a38]"
           >
-            Explore Our Menu
+            Menümüzü Keşfedin
             <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" />
           </a>
           <button
             type="button"
             onClick={onReserve}
-            className="group inline-flex items-center gap-3 rounded-full border border-white/35 bg-[#130f0a]/70 px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-white transition hover:bg-[#181208]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+            className="group inline-flex items-center gap-3 rounded-full border border-white/35 bg-[#2b0d0d]/70 px-7 py-3 text-[11px] font-semibold uppercase tracking-[0.38em] text-white transition hover:bg-[#420f11]/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
           >
-            Reserve an Evening
+            Bir Akşam Ayırtın
             <ArrowRightIcon className="h-4 w-4 transition group-hover:translate-x-1" />
           </button>
         </div>
@@ -92,7 +92,7 @@ export function HeroSection({
               </video>
             ) : heroVideoConfig ? (
               <Image
-                alt="Chef plating"
+                alt="Şef tabak hazırlıyor"
                 src={heroVideoConfig.poster}
                 fill
                 priority
@@ -103,12 +103,12 @@ export function HeroSection({
             <div className="hero-portal__halo" aria-hidden />
           </div>
 
-          <div className="w-full rounded-[2.5rem] pb-10 border border-white/35 bg-white/10 p-6 shadow-[0_35px_90px_rgba(0,0,0,0.3)] backdrop-blur-3xl" data-animate="float">
-            <div className="flex items-center justify-between gap-4 pb-4 text-left text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/80">
+          <div className="w-full rounded-[2.5rem] border border-white/35 bg-white/12 p-6 shadow-[0_35px_90px_rgba(10,0,0,0.35)] backdrop-blur-3xl" data-animate="float">
+            <div className="flex items-center justify-between gap-4 pb-4 text-left text-[0.65rem] font-semibold uppercase tracking-[0.35em] text-white/85">
               <span className="inline-flex items-center gap-2">
-                <SparklesIcon className="h-4 w-4 text-white/75" /> Spotlight Courses
+                <SparklesIcon className="h-4 w-4 text-white/75" /> Şefin Vurgusu
               </span>
-              <span className="hidden text-white/60 sm:inline">Chef&rsquo;s tasting preview</span>
+              <span className="hidden text-white/65 sm:inline">Şef tadımı ön izlemesi</span>
             </div>
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {highlights.map((highlight, index) => {
@@ -117,7 +117,7 @@ export function HeroSection({
                 return (
                   <li
                     key={highlight.title}
-                    className="relative flex flex-col gap-3 rounded-3xl border border-white/35 bg-white/15 p-4 text-left shadow-[0_25px_60px_rgba(0,0,0,0.25)] transition hover:bg-white/20"
+                    className="relative flex flex-col gap-3 rounded-3xl border border-white/35 bg-white/18 p-4 text-left shadow-[0_25px_60px_rgba(10,0,0,0.25)] transition hover:bg-white/24"
                     style={{
                       ...cardParallax(index),
                       ...(highlight.accent
@@ -133,8 +133,8 @@ export function HeroSection({
                         className="object-cover"
                         sizes="(max-width: 768px) 45vw, 220px"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-                      <span className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-white/80 backdrop-blur-md">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1b0404]/65 via-transparent to-transparent" />
+                      <span className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-black/45 px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-white/85 backdrop-blur-md">
                         <SpotlightIcon className="h-3.5 w-3.5" />
                         {highlight.tag}
                       </span>
@@ -143,7 +143,7 @@ export function HeroSection({
                       <p className="text-sm font-semibold uppercase tracking-[0.3em] text-white">
                         {highlight.title}
                       </p>
-                      <p className="text-xs leading-relaxed text-white/70">
+                      <p className="text-xs leading-relaxed text-white/75">
                         {highlight.description}
                       </p>
                     </div>

@@ -26,10 +26,10 @@ type ParallaxVector = { x: number; y: number };
 
 export default function Home() {
   const heroSectionRef = useRef<HTMLDivElement | null>(null);
-  const highlightsSectionRef = useRef<HTMLDivElement | null>(null);
-  const promiseSectionRef = useRef<HTMLDivElement | null>(null);
-  const missionSectionRef = useRef<HTMLDivElement | null>(null);
-  const contactSectionRef = useRef<HTMLDivElement | null>(null);
+  const highlightsSectionRef = useRef<HTMLElement | null>(null);
+  const promiseSectionRef = useRef<HTMLElement | null>(null);
+  const missionSectionRef = useRef<HTMLElement | null>(null);
+  const contactSectionRef = useRef<HTMLElement | null>(null);
   const backgroundVideosRef = useRef<Record<SectionKey, HTMLVideoElement | null>>({
     hero: null,
     highlights: null,
@@ -250,13 +250,13 @@ export default function Home() {
       />
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_20%_15%,rgba(255,243,220,0.28),transparent_55%),radial-gradient(circle_at_75%_80%,rgba(229,196,137,0.22),transparent_58%)]"
+        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_20%_15%,rgba(255,214,214,0.3),transparent_55%),radial-gradient(circle_at_75%_80%,rgba(146,221,168,0.25),transparent_60%)]"
       />
 
       {isNavOpen && (
         <button
           type="button"
-          aria-label="Close navigation"
+          aria-label="Menüyü kapat"
           className="fixed inset-0 z-30 cursor-pointer bg-black/30 backdrop-blur-sm sm:hidden"
           onClick={() => setIsNavOpen(false)}
         />
