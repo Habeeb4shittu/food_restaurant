@@ -80,7 +80,7 @@ export function HeroSection({
           <div className="hero-portal" style={parallaxStyle}>
             {heroVideoConfig && !prefersReducedMotion ? (
               <video
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-[20%] w-[20%] object-cover"
                 autoPlay
                 loop
                 muted

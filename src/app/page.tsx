@@ -21,6 +21,9 @@ import { NavBar } from "../components/home/NavBar";
 import { PromiseSection } from "../components/home/PromiseSection";
 import { ReservationModal } from "../components/home/ReservationModal";
 import type { BackgroundConfig, SectionKey } from "../components/home/types";
+import RotatingMedia from "../components/hero/RotatingMedia";
+import { StatsRail } from "../components/hero/StatsRail";
+import { FullpageSection } from "../components/sections/FullpageSection";
 
 type ParallaxVector = { x: number; y: number };
 
@@ -177,6 +180,16 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  const heroStatsLeft = [
+    { label: "Günlük Siparişler", value: "1.2k+", hint: "öğle yoğunluğu" },
+    { label: "Ortalama Hazırlık Süresi", value: "06:45", hint: "hazır olma süresi (dd:ss)" },
+  ];
+
+  const heroStatsRight = [
+    { label: "Memnuniyet", value: "98%", hint: "yemek sonrası anketler" },
+    { label: "Aktif Konumlar", value: "12", hint: "ve artıyor" },
+  ];
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -241,18 +254,22 @@ export default function Home() {
       : null;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden text-[#1f1810]">
+    <main className="relative min-h-screen overflow-x-hidden text-[#1f1810] snap-y snap-mandatory">
+      {/* keep your background or simplify */}
       <BackgroundManager
         entries={backgroundEntries}
         activeKey={activeThemeKey}
         prefersReducedMotion={prefersReducedMotion}
         videoRefs={backgroundVideosRef}
       />
+
+      {/* soft vignette */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 -z-40 bg-[radial-gradient(circle_at_20%_15%,rgba(255,214,214,0.3),transparent_55%),radial-gradient(circle_at_75%_80%,rgba(146,221,168,0.25),transparent_60%)]"
+        className="pointer-events-none fixed inset-0 -z-40 "
       />
 
+      {/* nav overlay logic unchanged */}
       {isNavOpen && (
         <button
           type="button"
@@ -271,26 +288,43 @@ export default function Home() {
         onReserve={() => setIsModalOpen(true)}
       />
 
-      <HeroSection
-        sectionRef={heroSectionRef}
-        highlights={heroHighlights}
-        parallaxStyle={parallaxStyle}
-        glowParallax={glowParallax}
-        cardParallax={cardParallax}
-        heroVideoConfig={heroVideoConfig}
-        prefersReducedMotion={prefersReducedMotion}
-        onReserve={() => setIsModalOpen(true)}
-      />
+      {/* HERO (mockup: rotating center + stats side rails) */}
+      <FullpageSection id="hero" themeKey="hero" ref={heroSectionRef}>
+        <div className="relative w-full max-w-7xl px-6 grid grid-cols-[1fr_auto_1fr] items-center gap-8">
+          <div className="flex justify-center md:justify-start">
+            <StatsRail side="left" stats={heroStatsLeft} />
+          </div>
 
-      <HighlightsSection sectionRef={highlightsSectionRef} highlights={heroHighlights} />
-      <PromiseSection sectionRef={promiseSectionRef} highlights={promiseHighlights} />
-      <MissionSection sectionRef={missionSectionRef} details={missionDetails} />
-      <ContactSection
-        sectionRef={contactSectionRef}
-        contactDetails={contactDetails}
-        contactCtas={contactCtas}
-        onReserve={() => setIsModalOpen(true)}
-      />
+          <div className="flex justify-center md:justify-end">
+            <StatsRail side="right" stats={heroStatsRight} />
+          </div>
+        </div>
+      </FullpageSection>
+
+      {/* HIGHLIGHTS */}
+      <FullpageSection id="highlights" themeKey="highlights" ref={highlightsSectionRef}>
+        <HighlightsSection sectionRef={highlightsSectionRef} highlights={heroHighlights} />
+      </FullpageSection>
+
+      {/* PROMISE */}
+      <FullpageSection id="promise" themeKey="promise" ref={promiseSectionRef}>
+        <PromiseSection sectionRef={promiseSectionRef} highlights={promiseHighlights} />
+      </FullpageSection>
+
+      {/* MISSION */}
+      <FullpageSection id="mission" themeKey="mission" ref={missionSectionRef}>
+        <MissionSection sectionRef={missionSectionRef} details={missionDetails} />
+      </FullpageSection>
+
+      {/* CONTACT */}
+      <FullpageSection id="contact" themeKey="contact" ref={contactSectionRef}>
+        <ContactSection
+          sectionRef={contactSectionRef}
+          contactDetails={contactDetails}
+          contactCtas={contactCtas}
+          onReserve={() => setIsModalOpen(true)}
+        />
+      </FullpageSection>
 
       <ReservationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </main>

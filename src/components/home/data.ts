@@ -29,7 +29,7 @@ export const navLinks: NavLink[] = [
 export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   hero: {
     kind: "video",
-    src: "https://cdn.pixabay.com/video/2025/07/11/290670_tiny.mp4",
+    src: "/media/shawarma.mp4",
     poster:
       "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80",
     overlay:
