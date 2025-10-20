@@ -290,12 +290,12 @@ export default function Home() {
 
       {/* HERO (mockup: rotating center + stats side rails) */}
       <FullpageSection id="hero" themeKey="hero" ref={heroSectionRef}>
-        <div className="relative w-full max-w-7xl px-6 grid grid-cols-[1fr_auto_1fr] items-center gap-8">
+        <div className="relative w-full max-w-7xl px-12 grid grid-cols-2 items-center justify-between gap-8">
           <div className="flex justify-center md:justify-start">
             <StatsRail side="left" stats={heroStatsLeft} />
           </div>
 
-          <div className="flex justify-center md:justify-end">
+          <div className="flex justify-center md:gap-10 md:justify-end md:self-end">
             <StatsRail side="right" stats={heroStatsRight} />
           </div>
         </div>

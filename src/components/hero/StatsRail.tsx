@@ -14,7 +14,7 @@ export function StatsRail({
     return (
         <aside
             className={[
-                "pointer-events-none flex flex-col gap-4",
+                "pointer-events-none flex flex-col gap-6 md:gap-8 lg:gap-[6.5rem]",
                 side === "left" ? "items-start text-left" : "items-end text-right",
             ].join(" ")}
         >
