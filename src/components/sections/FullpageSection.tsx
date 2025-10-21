@@ -14,9 +14,10 @@ export const FullpageSection = forwardRef(function FullpageSection(
             id={id}
             ref={ref}
             data-theme={themeKey}
-            className="snap-start min-h-[100svh] grid place-items-center relative"
+            className="snap-start [scroll-snap-stop:always] min-h-[100svh] grid place-items-center relative"
         >
             {children}
         </section>
+
     );
 });

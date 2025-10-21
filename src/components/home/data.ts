@@ -38,13 +38,14 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
       "radial-gradient(120% 120% at 20% 20%, rgba(255, 244, 244, 0.96) 0%, rgba(245, 226, 226, 0.94) 45%, rgba(234, 220, 220, 0.9) 100%)",
   },
   highlights: {
-    kind: "gradient",
-    gradient:
-      "radial-gradient(120% 140% at 20% 20%, rgba(255, 244, 244, 0.92) 0%, rgba(244, 213, 213, 0.88) 40%, rgba(226, 237, 223, 0.88) 75%, rgba(209, 231, 203, 0.85) 100%)",
-    texture:
-      "radial-gradient(circle at 80% 25%, rgba(226, 39, 54, 0.22), transparent 55%), radial-gradient(circle at 15% 85%, rgba(27, 132, 74, 0.2), transparent 60%)",
+    kind: "video",
+    src: "/media/highlight-shawarma.mp4",
+    poster:
+      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80",
     overlay:
-      "radial-gradient(140% 140% at 50% 40%, rgba(25, 11, 10, 0.22), rgba(25, 11, 10, 0.05) 60%, transparent 100%)",
+      "linear-gradient(180deg, rgba(15, 6, 5, 0.55) 0%, rgba(20, 9, 8, 0.28) 45%, rgba(26, 11, 9, 0.1) 100%)",
+    fallbackGradient:
+      "radial-gradient(120% 120% at 20% 20%, rgba(255, 244, 244, 0.96) 0%, rgba(245, 226, 226, 0.94) 45%, rgba(234, 220, 220, 0.9) 100%)",
   },
   promise: {
     kind: "video",

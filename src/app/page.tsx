@@ -211,6 +211,112 @@ export default function Home() {
     };
   }, [isModalOpen, isNavOpen]);
 
+
+  useEffect(() => {
+    const container = document.querySelector<HTMLElement>('main[data-snap-container]');
+    if (!container) return;
+
+    const sections = Array.from(
+      container.querySelectorAll<HTMLElement>('section[data-theme]')
+    );
+
+    // Guard: nothing to do if we’re missing sections or motion is reduced
+    if (sections.length === 0 || prefersReducedMotion) return;
+
+    let lock = false;
+    let lockTimer: number | null = null;
+    let touchStartY = 0;
+
+    const clearLock = () => {
+      lock = false;
+      if (lockTimer) {
+        window.clearTimeout(lockTimer);
+        lockTimer = null;
+      }
+    };
+
+    const currentIndex = () => {
+      // use intersection-driven state if available, fall back to geometry
+      const idxFromState = sections.findIndex(s => s.getAttribute('data-theme') === activeSection);
+      if (idxFromState >= 0) return idxFromState;
+
+      const mid = window.innerHeight / 2;
+      let best = 0, bestDist = Infinity;
+      sections.forEach((s, i) => {
+        const r = s.getBoundingClientRect();
+        const dist = Math.abs((r.top + r.height / 2) - mid);
+        if (dist < bestDist) { bestDist = dist; best = i; }
+      });
+      return best;
+    };
+
+    const scrollToIndex = (i: number) => {
+      if (lock || i < 0 || i >= sections.length) return;
+      lock = true;
+      sections[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // modest lock so trackpad inertia doesn’t cascade
+      lockTimer = window.setTimeout(clearLock, 900);
+    };
+
+    const onWheel = (e: WheelEvent) => {
+      if (lock) return;
+      // Need non-passive to prevent native scroll snapping mid-animation
+      e.preventDefault();
+      const dy = e.deltaY;
+      // Hysteresis so micro scrolls don’t trigger
+      if (Math.abs(dy) < 20) return;
+
+      const idx = currentIndex();
+      if (dy > 0 && idx < sections.length - 1) scrollToIndex(idx + 1);
+      else if (dy < 0 && idx > 0) scrollToIndex(idx - 1);
+    };
+
+    const onKey = (e: KeyboardEvent) => {
+      if (lock) return;
+      if (!['ArrowDown', 'PageDown', 'ArrowUp', 'PageUp', 'Space'].includes(e.key)) return;
+      e.preventDefault();
+      const idx = currentIndex();
+      if ((e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === 'Space') && idx < sections.length - 1) {
+        scrollToIndex(idx + 1);
+      } else if ((e.key === 'ArrowUp' || e.key === 'PageUp') && idx > 0) {
+        scrollToIndex(idx - 1);
+      }
+    };
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (lock) return;
+      const dy = touchStartY - e.touches[0].clientY;
+      // Require a real swipe
+      if (Math.abs(dy) < 40) return;
+      e.preventDefault();
+      const idx = currentIndex();
+      if (dy > 0 && idx < sections.length - 1) scrollToIndex(idx + 1);
+      else if (dy < 0 && idx > 0) scrollToIndex(idx - 1);
+    };
+
+    // Listeners
+    container.addEventListener('wheel', onWheel, { passive: false });
+    container.addEventListener('keydown', onKey, { passive: false });
+    container.addEventListener('touchstart', onTouchStart, { passive: true });
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+
+    // Ensure container can receive key events
+    container.focus();
+
+    return () => {
+      container.removeEventListener('wheel', onWheel as any);
+      container.removeEventListener('keydown', onKey as any);
+      container.removeEventListener('touchstart', onTouchStart as any);
+      container.removeEventListener('touchmove', onTouchMove as any);
+      clearLock();
+    };
+  }, [activeSection, prefersReducedMotion]);
+
+
   const parallaxStyle = useMemo<CSSProperties>(() => {
     if (prefersReducedMotion) {
       return { transform: "translate3d(0,0,0)" };
@@ -254,7 +360,11 @@ export default function Home() {
       : null;
 
   return (
-    <main className="relative min-h-screen overflow-x-hidden text-[#1f1810] snap-y snap-mandatory">
+    <main
+      data-snap-container
+      tabIndex={0}
+      className="relative h-screen overflow-y-scroll overflow-x-hidden text-[#1f1810] snap-y snap-mandatory"
+    >
       {/* keep your background or simplify */}
       <BackgroundManager
         entries={backgroundEntries}
