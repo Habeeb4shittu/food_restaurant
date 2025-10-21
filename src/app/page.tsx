@@ -308,10 +308,10 @@ export default function Home() {
     container.focus();
 
     return () => {
-      container.removeEventListener('wheel', onWheel as any);
-      container.removeEventListener('keydown', onKey as any);
-      container.removeEventListener('touchstart', onTouchStart as any);
-      container.removeEventListener('touchmove', onTouchMove as any);
+      container.removeEventListener('wheel', onWheel);
+      container.removeEventListener('keydown', onKey);
+      container.removeEventListener('touchstart', onTouchStart);
+      container.removeEventListener('touchmove', onTouchMove);
       clearLock();
     };
   }, [activeSection, prefersReducedMotion]);
