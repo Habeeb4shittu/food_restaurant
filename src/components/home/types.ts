@@ -1,6 +1,11 @@
 import type { ComponentType, SVGProps } from "react";
 
-export type SectionKey = "hero" | "highlights" | "promise" | "mission" | "contact";
+export type SectionKey =
+  | "hero"
+  | "highlights"
+  | "promise"
+  | "mission"
+  | "contact";
 
 export type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
 
@@ -17,6 +22,17 @@ export type BackgroundConfig =
       gradient: string;
       texture?: string;
       overlay?: string;
+    }
+  | {
+      kind: "model";
+      src: string; // path to /Hamburger.glb or similar
+      overlay?: string;
+      fallbackGradient?: string;
+      gradient?: string;
+      // optional fine-tuning
+      camera?: { position?: [number, number, number]; fov?: number };
+      rotateSpeed?: number; // rad/sec
+      scale?: number;
     };
 
 export type NavLink = { id: SectionKey; label: string };
@@ -32,4 +48,8 @@ export type HeroHighlight = {
 
 export type MissionDetail = { label: string; value: string };
 
-export type ContactDetail = { title: string; description: string; icon: IconComponent };
+export type ContactDetail = {
+  title: string;
+  description: string;
+  icon: IconComponent;
+};
