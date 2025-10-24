@@ -3,6 +3,7 @@ import type { MutableRefObject } from "react";
 import React, { Suspense, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import type { BackgroundConfig, SectionKey } from "./types";
+import { useFrame } from "@react-three/fiber";
 
 // Lazy client-only R3F bits
 const Canvas = dynamic(
@@ -10,9 +11,13 @@ const Canvas = dynamic(
   { ssr: false }
 );
 const Drei = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useGLTF: undefined as any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Center: undefined as any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   Environment: undefined as any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   OrbitControls: undefined as any,
 };
 if (typeof window !== "undefined") {
@@ -46,7 +51,6 @@ function RotatingModel({
   idleAfter?: number;
 }) {
   const group = useRef<THREE.Group>(null!);
-  const { useFrame } = require("@react-three/fiber");
   const gltf = Drei.useGLTF?.(src);
 
   // pointer state
@@ -86,7 +90,7 @@ function RotatingModel({
   // tiny helper
   const damp = (curr: number, target: number, lambda: number, dt: number) =>
     curr + (target - curr) * (1 - Math.exp(-lambda * dt));
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   useFrame((_: any, delta: number) => {
     const g = group.current;
     if (!g) return;
@@ -176,6 +180,7 @@ export function BackgroundManager({
                   className="absolute inset-0"
                   style={{
                     backgroundImage:
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       (config as any).fallbackGradient || `url(${(config as any).poster})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -192,19 +197,29 @@ export function BackgroundManager({
                   muted
                   playsInline
                   preload="metadata"
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   poster={(config as any).poster}
                 >
-                  <source src={(config as any).src} type="video/mp4" />
+                  <source src={
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (config as any).src} type="video/mp4" />
                 </video>
               )}
-              {(config as any).overlay ? (
-                <div className="absolute inset-0" style={{ background: (config as any).overlay }} />
-              ) : null}
+
+              {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (config as any).overlay ? (
+                  <div className="absolute inset-0" style={{
+                    background:
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      (config as any).overlay
+                  }} />
+                ) : null}
             </div>
           );
         }
 
-        // MODELs
+        // MODEL
         if (config.kind === "model") {
           const c = config as Extract<BackgroundConfig, { kind: "model" }>;
           return (
@@ -256,6 +271,7 @@ export function BackgroundManager({
 
 
         // GRADIENT
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const g = config as any;
         const gradientImage = g.texture ? `${g.gradient}, ${g.texture}` : g.gradient;
 
