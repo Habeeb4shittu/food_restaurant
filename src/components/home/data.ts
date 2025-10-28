@@ -29,16 +29,16 @@ export const navLinks: NavLink[] = [
 export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   hero: {
     kind: "model",
-    src: "/Donut_with_chocolate.glb",
+    src: "/Shawarma.glb",
     gradient:
-      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+      " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
     overlay:
       "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
     fallbackGradient:
       "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
     camera: { position: [0, 0, 15.0], fov: 15 },
     rotateSpeed: 0.3,
-    scale: 5.2,
+    scale: 2.2,
   },
   highlights: {
     kind: "video",

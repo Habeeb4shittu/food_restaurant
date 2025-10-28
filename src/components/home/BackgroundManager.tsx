@@ -4,6 +4,8 @@ import React, { Suspense, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import type { BackgroundConfig, SectionKey } from "./types";
 import { useFrame } from "@react-three/fiber";
+import Image from "next/image";
+import FadedBackdropText from "../FadedBackdropText";
 
 // Lazy client-only R3F bits
 const Canvas = dynamic(
@@ -228,13 +230,13 @@ export function BackgroundManager({
               aria-hidden
               className={`${baseClasses} ${isActive ? "opacity-100" : "opacity-0"}`}
             >
-              {/* Gradient layer always visible under the 3D canvas */}
-              <div
-                className="absolute inset-0"
-                style={{
-                  background: c.gradient || c.fallbackGradient || "transparent",
-                }}
-              />
+              <img src={"/media/smoky_cloud.png"} alt="" className="absolute bottom-0 w-full z-1 opacity-30" />
+              <video src="/media/coffee.mp4" className="absolute right-0 w-[45%] top-0" muted autoPlay loop></video>
+              {/* gradient base (z-0) */}
+              <div className="absolute inset-0 z-0" style={{ background: c.gradient || c.fallbackGradient || "transparent" }} />
+
+              {/* the faded background text (under the Canvas) */}
+              <FadedBackdropText baseScale={0.8} duration={0.4} delayStep={0.08} text="ISTANBUL" subtext="Pilic" opacity={0.62} />
 
               {!prefersReducedMotion && Canvas ? (
                 <Suspense fallback={null}>
@@ -245,7 +247,7 @@ export function BackgroundManager({
                       fov: c.camera?.fov ?? 45,
                     }}
                     frameloop="always"
-                    className="absolute inset-0"
+                    className="absolute z-10 inset-0"
                   >
                     <ambientLight intensity={0.8} />
                     <directionalLight position={[3, 5, 2]} intensity={1} />
