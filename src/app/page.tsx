@@ -33,9 +33,11 @@ export default function Home() {
   const promiseSectionRef = useRef<HTMLDivElement>(null!);
   const missionSectionRef = useRef<HTMLDivElement>(null!);
   const contactSectionRef = useRef<HTMLDivElement>(null!);
+  const statsSectionRef = useRef<HTMLDivElement>(null!);
   const backgroundVideosRef = useRef<Record<SectionKey, HTMLVideoElement | null>>({
     hero: null,
     highlights: null,
+    statsSection: null,
     promise: null,
     mission: null,
     contact: null,
@@ -47,6 +49,8 @@ export default function Home() {
   const [scrollDepth, setScrollDepth] = useState(0);
   const [activeSection, setActiveSection] = useState<SectionKey>("hero");
   const [activeThemeKey, setActiveThemeKey] = useState<SectionKey>("hero");
+  const darkSections: SectionKey[] = ["promise", "mission", "contact"];
+  const isDarkTheme = darkSections.includes(activeThemeKey);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
@@ -99,6 +103,7 @@ export default function Home() {
   useEffect(() => {
     const sectionEntries: [SectionKey, HTMLElement | null][] = [
       ["hero", heroSectionRef.current],
+      ["statsSection", statsSectionRef.current],
       ["highlights", highlightsSectionRef.current],
       ["promise", promiseSectionRef.current],
       ["mission", missionSectionRef.current],
@@ -396,43 +401,56 @@ export default function Home() {
         onToggleNav={() => setIsNavOpen((prev) => !prev)}
         onNavigate={() => setIsNavOpen(false)}
         onReserve={() => setIsModalOpen(true)}
+        darkMode={isDarkTheme}
       />
 
       {/* HERO (mockup: rotating center + stats side rails) */}
       <FullpageSection id="hero" themeKey="hero" ref={heroSectionRef}>
-        <div className="relative w-full max-w-7xl px-12 grid grid-cols-2 items-center justify-between gap-8">
+        <HeroSection sectionRef={heroSectionRef} parallaxStyle={parallaxStyle} />
+      </FullpageSection>
+      {/* HERO (mockup: rotating center + stats side rails) */}
+      <FullpageSection id="statsSection" alignContent="start" themeKey="statsSection" ref={statsSectionRef}>
+        <div className="relative w-full max-w-7xl px-4 sm:px-6 md:px-12 pt-24 sm:pt-28 md:pt-32 grid grid-cols-1 md:grid-cols-2 items-start justify-between gap-6 md:gap-8">
+          {/* Left: stats rail (unchanged; centered on mobile, original on desktop) */}
           <div className="flex justify-center md:justify-start">
             <StatsRail side="left" stats={heroStatsLeft} />
           </div>
 
-          <div className="flex justify-center md:gap-10 md:justify-end md:self-end">
-            <StatsRail side="right" stats={heroStatsRight} />
+          {/* Right: headline block (absolute on desktop only; responsive sizes) */}
+          <div className="relative md:absolute md:right-0 md:w-1/2 mt-8 md:mt-20 flex flex-col gap-y-4 items-start justify-start">
+            <span className="text-[10px] sm:text-xs text-white">Sınırların Ötesinde Lezzet</span>
+            <h1 className="uppercase text-3xl sm:text-4xl text-white leading-tight">
+              Lezzet için <br /> Tasarlandı
+            </h1>
           </div>
+
+          {/* Floating side line — keep desktop placement, tone down on mobile */}
+          <h3 className="hidden md:block absolute text-white top-[50%] -translate-y-1/2 right-4">
+            Durdurulamaz mutfak <br />
+            ateşin kalbinde kurulu
+          </h3>
         </div>
       </FullpageSection>
 
       {/* HIGHLIGHTS */}
       <FullpageSection id="highlights" themeKey="highlights" ref={highlightsSectionRef}>
-        <HighlightsSection sectionRef={highlightsSectionRef} highlights={heroHighlights} />
+        <HighlightsSection sectionRef={highlightsSectionRef} />
       </FullpageSection>
 
       {/* PROMISE */}
       <FullpageSection id="promise" themeKey="promise" ref={promiseSectionRef}>
-        <PromiseSection sectionRef={promiseSectionRef} highlights={promiseHighlights} />
+        <PromiseSection sectionRef={promiseSectionRef} />
       </FullpageSection>
 
       {/* MISSION */}
       <FullpageSection id="mission" themeKey="mission" ref={missionSectionRef}>
-        <MissionSection sectionRef={missionSectionRef} details={missionDetails} />
+        <MissionSection sectionRef={missionSectionRef} />
       </FullpageSection>
 
       {/* CONTACT */}
       <FullpageSection id="contact" themeKey="contact" ref={contactSectionRef}>
         <ContactSection
           sectionRef={contactSectionRef}
-          contactDetails={contactDetails}
-          contactCtas={contactCtas}
-          onReserve={() => setIsModalOpen(true)}
         />
       </FullpageSection>
 

@@ -1,178 +1,92 @@
 "use client";
 
+import { Center, Environment } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import Image from "next/image";
-import type { RefObject } from "react";
-import type { HeroHighlight } from "./types";
+import { Suspense, type RefObject } from "react";
+import { RotatingModel } from "./BackgroundManager";
 
 type HighlightsSectionProps = {
   sectionRef: RefObject<HTMLDivElement>;
-  highlights: HeroHighlight[];
 };
 
-export function HighlightsSection({ sectionRef, highlights }: HighlightsSectionProps) {
-  // split highlights into two stacks (bottom-left / bottom-right)
-  const mid = Math.ceil(highlights.length / 2);
-  const leftPile = highlights.slice(0, mid);
-  const rightPile = highlights.slice(mid);
-
+export function HighlightsSection({ sectionRef }: HighlightsSectionProps) {
   return (
     <section
       id="highlights"
-      data-theme="highlights"
       ref={sectionRef}
       className={[
-        // full-viewport, keep center empty for bg video
-        "relative min-h-[100svh] w-full",
-        "grid place-items-center",
-        "px-4 py-16 sm:px-8",
-        "text-[#2d1814]",
+        "relative min-h-[100svh] w-full overflow-hidden",
+        "grid place-items-center px-4 sm:px-8 py-24 sm:py-28",
+        "text-white",
       ].join(" ")}
     >
-      {/* Invisible center spacer so the bg video stays visible */}
-      <div className="pointer-events-none h-[52vmin] w-[52vmin] rounded-full lg:h-[58vmin] lg:w-[58vmin]" />
+      {/* LEFT SIDE: headline and blurbs (absolute on md+, flow on mobile) */}
+      <div
+        className={[
+          "max-w-lg space-y-6",
+          "md:absolute md:left-10 md:top-28",
+          "md:max-w-lg",
+          "w-full md:w-auto",
+          "px-1 md:px-0",
+        ].join(" ")}
+        data-animate
+      >
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.05] tracking-tight md:tracking-tight md:text-7xl">
+          ATEŞ <br />
+          ÖTESİ <br />
+          LEZZET
+        </h1>
 
-      {/* Corner layout (desktop). On mobile we show a stacked fallback below */}
-      <div className="pointer-events-none absolute inset-0 hidden lg:block">
-        {/* Top left: section heading */}
-        <div className="pointer-events-auto absolute left-8 top-10 max-w-xl">
-          <div
-            className="rounded-[2rem] border border-white/65 bg-white/70 p-6 shadow-[0_35px_70px_rgba(123,18,25,0.14)] backdrop-blur-2xl"
-            data-animate
-          >
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#e20613]">
-              Şefin Seçkisi
-            </p>
-            <h2 className="mt-2 text-3xl font-semibold leading-snug">
-              Mevsimlik tabaklarda Anadolu yorumu
-            </h2>
-            <p className="mt-3 text-sm text-[#5f3b35] max-w-lg">
-              Her tabak, taş fırın notalarıyla harmanlanan fermente soslar ve taze baharatlarla İstanbul
-              ruhunu yansıtıyor.
-            </p>
-          </div>
+        <div className="mt-4 sm:mt-6 flex flex-col gap-2.5 sm:gap-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] sm:tracking-[0.25em] text-[#fff]">
+          <p>Odun Ateşi & Marinasyon</p>
+          <p>Günlük Taze Baharatlar</p>
         </div>
 
-        {/* Top right: tiny blurb or CTA chips (keep it airy) */}
-        <div className="pointer-events-auto absolute right-8 top-10 flex max-w-md flex-col gap-3">
-          <div
-            className="rounded-full bg-white/80 px-4 py-2 text-xs font-semibold uppercase tracking-[0.32em] text-[#c21c26] shadow ring-1 ring-white/60 backdrop-blur"
-            data-animate
-          >
-            Fırından Sıcak
-          </div>
-          <div
-            className="rounded-2xl bg-white/70 px-4 py-3 text-sm text-[#5f3b35] shadow ring-1 ring-white/60 backdrop-blur"
-            data-animate
-          >
-            Günlük taze hamur, odun ateşi, sade iyilik.
-          </div>
-        </div>
-
-        {/* Bottom left: first pile of highlight cards */}
-        <div className="pointer-events-auto absolute bottom-10 left-8 flex max-w-md flex-col gap-6">
-          {leftPile.map((highlight, index) => {
-            const SpotlightIcon = highlight.icon;
-            return (
-              <article
-                key={`L-${highlight.title}-${index}`}
-                className="group relative overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/70 p-5 shadow-[0_35px_70px_rgba(123,18,25,0.14)] backdrop-blur-2xl"
-                data-animate={index % 2 === 0 ? "slide-right" : "float"}
-              >
-                <div className="relative mb-4 h-36 w-full overflow-hidden rounded-[1.4rem] border border-white/60">
-                  <Image
-                    alt={highlight.title}
-                    src={highlight.image}
-                    fill
-                    className="object-cover"
-                    sizes="320px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2b0d0d]/65 via-transparent to-transparent" />
-                  <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#c21c26] shadow">
-                    <SpotlightIcon className="h-4 w-4 text-[#0f7a38]" />
-                    {highlight.tag}
-                  </div>
-                </div>
-                <h3 className="text-base font-semibold">{highlight.title}</h3>
-                <p className="mt-2 text-sm text-[#5f3b35] line-clamp-3">{highlight.description}</p>
-              </article>
-            );
-          })}
-        </div>
-
-        {/* Bottom right: second pile of highlight cards */}
-        <div className="pointer-events-auto absolute bottom-10 right-8 flex max-w-md flex-col gap-6">
-          {rightPile.map((highlight, index) => {
-            const SpotlightIcon = highlight.icon;
-            return (
-              <article
-                key={`R-${highlight.title}-${index}`}
-                className="group relative overflow-hidden rounded-[1.75rem] border border-white/60 bg-white/70 p-5 shadow-[0_35px_70px_rgba(123,18,25,0.14)] backdrop-blur-2xl"
-                data-animate={index % 2 === 0 ? "slide-left" : "float"}
-              >
-                <div className="relative mb-4 h-36 w-full overflow-hidden rounded-[1.4rem] border border-white/60">
-                  <Image
-                    alt={highlight.title}
-                    src={highlight.image}
-                    fill
-                    className="object-cover"
-                    sizes="320px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#2b0d0d]/65 via-transparent to-transparent" />
-                  <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#c21c26] shadow">
-                    <SpotlightIcon className="h-4 w-4 text-[#0f7a38]" />
-                    {highlight.tag}
-                  </div>
-                </div>
-                <h3 className="text-base font-semibold">{highlight.title}</h3>
-                <p className="mt-2 text-sm text-[#5f3b35] line-clamp-3">{highlight.description}</p>
-              </article>
-            );
-          })}
+        <div className="mt-6 sm:mt-8">
+          <p className="text-xs sm:text-sm font-medium text-[#fff] flex items-center gap-2">
+            <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-[#fff]" />
+            Usta Şef Dokunuşu
+          </p>
         </div>
       </div>
 
-      {/* Mobile/tablet fallback: simple grid so it doesn’t get weird */}
-      <div className="lg:hidden w-full max-w-6xl">
+      {/* RIGHT SIDE: inset image card (absolute on md+, stacks on mobile) */}
+      <div
+        className={[
+          "flex flex-col items-center gap-4 sm:gap-6",
+          "mt-10 md:mt-0",
+          "md:absolute md:right-12 md:top-28",
+        ].join(" ")}
+      >
         <div
-          className="rounded-[2rem] border border-white/65 bg-white/70 p-6 shadow-[0_35px_70px_rgba(123,18,25,0.14)] backdrop-blur-2xl"
-          data-animate
+          className="rounded-2xl overflow-hidden border border-white/70 
+          bg-white/70 backdrop-blur-xl shadow-[0_25px_70px_rgba(0,0,0,0.15)] 
+          w-[78vw] max-w-[320px] h-[200px] sm:h-[220px] md:w-[260px] md:h-[220px]"
         >
-          <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#e20613]">Şefin Seçkisi</p>
-          <h2 className="mt-2 text-2xl font-semibold leading-snug">Mevsimlik tabaklarda Anadolu yorumu</h2>
-          <p className="mt-3 text-sm text-[#5f3b35]">
-            Her tabak, taş fırın notalarıyla harmanlanan fermente soslar ve taze baharatlarla İstanbul ruhunu yansıtıyor.
-          </p>
-
-          <div className="mt-8 grid gap-5 sm:grid-cols-2">
-            {highlights.map((highlight, index) => {
-              const SpotlightIcon = highlight.icon;
-              return (
-                <article
-                  key={`${highlight.title}-${index}`}
-                  className="group relative overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/70 p-5 shadow-[0_25px_50px_rgba(123,18,25,0.12)] backdrop-blur-2xl"
-                  data-animate={index % 3 === 0 ? "slide-right" : index % 3 === 1 ? "float" : "slide-left"}
-                >
-                  <div className="relative mb-4 h-40 w-full overflow-hidden rounded-[1.25rem] border border-white/60">
-                    <Image
-                      alt={highlight.title}
-                      src={highlight.image}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 90vw, 420px"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b0d0d]/65 via-transparent to-transparent" />
-                    <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.32em] text-[#c21c26] shadow">
-                      <SpotlightIcon className="h-4 w-4 text-[#0f7a38]" />
-                      {highlight.tag}
-                    </div>
-                  </div>
-                  <h3 className="text-base font-semibold">{highlight.title}</h3>
-                  <p className="mt-2 text-sm text-[#5f3b35]">{highlight.description}</p>
-                </article>
-              );
-            })}
-          </div>
+          <Suspense fallback={<div className="w-full h-full bg-neutral-200" />}>
+            <Canvas
+              camera={{ position: [0, 0, 6], fov: 45 }}
+              dpr={[1, 1.5]}
+              className="absolute inset-0"
+            >
+              <ambientLight intensity={0.8} />
+              <directionalLight position={[3, 5, 2]} intensity={1} />
+              <Environment preset="city" />
+              <Center>
+                <RotatingModel
+                  src="/Shawarma.glb"
+                  isActive={true}
+                  scale={1.2}
+                  maxTilt={0.5}
+                />
+              </Center>
+            </Canvas>
+          </Suspense>
         </div>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-normal leading-[1.05] tracking-tight">
+          İSTANBUL
+        </h1>
       </div>
     </section>
   );

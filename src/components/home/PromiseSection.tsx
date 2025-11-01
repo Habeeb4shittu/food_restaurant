@@ -1,65 +1,64 @@
-import Image from "next/image";
-import type { RefObject } from "react";
+"use client"
 
-import { SparklesIcon } from "../icons";
+import type { RefObject } from "react"
+import { GlobeIcon } from "lucide-react"
 
-type PromiseSectionProps = {
-  sectionRef: RefObject<HTMLDivElement>;
-  highlights: string[];
-};
-
-export function PromiseSection({ sectionRef, highlights }: PromiseSectionProps) {
+export function PromiseSection({ sectionRef }: { sectionRef: RefObject<HTMLDivElement> }) {
   return (
     <section
       id="promise"
-      data-theme="promise"
       ref={sectionRef}
-      className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-24 text-[#2d1814] sm:px-8"
+      className="relative min-h-[100svh] w-full flex items-center justify-center px-4 sm:px-6 md:px-8 py-20 md:py-24 text-white"
     >
-      <div className="grid gap-10 rounded-[2.75rem] border border-white/65 bg-white/72 p-8 shadow-[0_50px_110px_rgba(123,18,25,0.2)] backdrop-blur-2xl lg:grid-cols-[1.1fr_0.9fr] lg:p-12">
-        <div className="space-y-6" data-animate="slide-right">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ffc7c7]/40 bg-[#fff1f1]/80">
-              <SparklesIcon className="h-4 w-4 text-[#e20613]" />
-            </span>
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#0f7a38]">Sözümüz</p>
-          </div>
-          <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">
-            Sürdürülebilir üretim, İstanbul ruhuyla yükselen servis.
-          </h2>
-          <p className="text-sm text-[#5f3b35]">
-            İstanbul Piliç, yerel çiftliklerle kurduğu bağ ve israfı azaltan mutfak ritüelleriyle Anadolu’nun lezzetini şehrin kalbine taşıyor.
-          </p>
-          <ul className="grid gap-4 text-sm text-[#5f3b35] sm:grid-cols-2">
-            {highlights.map((item, index) => (
-              <li
-                key={item}
-                className="rounded-[1.75rem] border border-white/65 bg-white/80 px-5 py-4"
-                data-animate={index % 2 === 0 ? "slide-right" : "slide-left"}
-              >
-                {item}
-              </li>
-            ))}
-          </ul>
+      {/* top-left meta label (absolute on md+, flows on mobile) */}
+      <div
+        className="space-y-6 sm:space-y-8 font-medium text-neutral-300
+                   w-full md:w-auto
+                   md:absolute md:top-[20%] md:left-10
+                   max-w-md md:max-w-none
+                   px-1 md:px-0"
+        data-animate="fade-in"
+      >
+        <div className="flex items-center gap-2 text-white font-semibold text-xs sm:text-sm tracking-wide">
+          <GlobeIcon className="text-[#d46a34] w-4 h-4" />
+          Dünya çapında lezzet
         </div>
-        <div className="relative overflow-hidden rounded-[2.25rem] border border-white/65 bg-gradient-to-br from-[#fff0f0]/75 to-[#e0f3dd]/55 p-8 text-[#2d1814] shadow-[0_45px_90px_rgba(123,18,25,0.22)]" data-animate="slide-left">
-          <div className="space-y-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#e20613]">İmza Eşleşme</p>
-            <h3 className="text-2xl font-semibold">Fesleğenli Piliç Lokması</h3>
-            <p className="text-sm text-[#5f3b35]">
-              Bakır tavada karamelize edilen piliç lokmaları, narenciye dumanı ve taze fesleğen köpüğü eşliğinde masada açığa çıkar.
-            </p>
-            <Image
-              src="https://images.unsplash.com/photo-1512058564366-c9e2c8c7ed3c?auto=format&fit=crop&w=900&q=80"
-              alt="Fesleğenle süslenmiş piliç lokması"
-              width={640}
-              height={480}
-              className="h-56 w-full rounded-[1.75rem] object-cover"
-              loading="lazy"
-            />
-          </div>
-        </div>
+        <h2 className="text-base sm:text-lg md:text-xl font-bold leading-tight mb-2 md:mb-6">
+          <span className="text-[#d46a34]">İstanbul Piliç</span> sizi<br />başkalarının ulaşamadığı tatlara götürür
+        </h2>
+      </div>
+
+      {/* main left copy (keeps original position on desktop) */}
+      <div
+        className="max-w-xl w-full
+                   mt-8 md:mt-0
+                   md:absolute md:top-[18%]"
+        data-animate="slide-right"
+      >
+        <p className="text-xs sm:text-sm text-white/95 leading-relaxed max-w-md">
+          Çöl sıcaklığından dağ serinliğine, odun ateşinde pişen piliçlerimiz
+          sizi her lokmada yolculuğa çıkarır. Bu yalnızca bir yemek değil;
+          özgürlük, ateşin gücü ve sahici mutfak deneyimi.
+        </p>
+      </div>
+
+      {/* right-side blurbs (absolute on md+, stacked spacing on mobile) */}
+      <div
+        className="text-right md:text-right
+                   w-full md:w-auto
+                   mt-10 md:mt-0
+                   md:absolute md:right-10 md:top-16
+                   h-auto md:h-full
+                   flex md:flex-col items-end md:items-end justify-start md:justify-between
+                   gap-6 md:gap-0
+                   pb-0 md:pb-36 pt-0 md:pt-16
+                   text-[11px] sm:text-xs md:text-sm font-medium space-y-0 md:space-y-6 text-neutral-300"
+      >
+        <p>Saf lezzet<br />ateşten sofraya</p>
+        <p className="text-white font-semibold uppercase tracking-wide">
+          Sınır yok<br />Taviz yok
+        </p>
       </div>
     </section>
-  );
+  )
 }

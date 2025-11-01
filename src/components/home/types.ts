@@ -4,6 +4,7 @@ export type SectionKey =
   | "hero"
   | "highlights"
   | "promise"
+  | "statsSection"
   | "mission"
   | "contact";
 

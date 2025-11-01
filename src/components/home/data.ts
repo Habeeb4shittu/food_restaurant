@@ -20,6 +20,7 @@ import type {
 
 export const navLinks: NavLink[] = [
   { id: "hero", label: "Ana Sayfa" },
+  { id: "statsSection", label: "İstatistikler" },
   { id: "highlights", label: "Öne Çıkanlar" },
   { id: "promise", label: "Sözümüz" },
   { id: "mission", label: "Misyonumuz" },
@@ -40,45 +41,70 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
     rotateSpeed: 0.3,
     scale: 2.2,
   },
-  highlights: {
-    kind: "video",
-    src: "/media/highlight-shawarma.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80",
+  statsSection: {
+    kind: "model",
+    src: "/Shawarma.glb",
+    gradient:
+      " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
     overlay:
-      "linear-gradient(180deg, rgba(15, 6, 5, 0.55) 0%, rgba(20, 9, 8, 0.28) 45%, rgba(26, 11, 9, 0.1) 100%)",
+      "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
     fallbackGradient:
-      "radial-gradient(120% 120% at 20% 20%, rgba(255, 244, 244, 0.96) 0%, rgba(245, 226, 226, 0.94) 45%, rgba(234, 220, 220, 0.9) 100%)",
+      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+    camera: { position: [0, 0, 15.0], fov: 15 },
+    rotateSpeed: 0.3,
+    scale: 2.2,
+  },
+  highlights: {
+    kind: "model",
+    src: "/Shawarma.glb",
+    gradient:
+      " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
+    overlay:
+      "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
+    fallbackGradient:
+      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+    camera: { position: [0, 0, 15.0], fov: 15 },
+    rotateSpeed: 0.3,
+    scale: 2.2,
   },
   promise: {
-    kind: "video",
-    src: "https://cdn.pixabay.com/video/2024/08/18/227132_tiny.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1446611720526-39d16597055e?auto=format&fit=crop&w=1600&q=80",
+    kind: "model",
+    src: "/Shawarma.glb",
+    gradient:
+      " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
-      "linear-gradient(180deg, rgba(18, 7, 6, 0.58) 0%, rgba(30, 12, 10, 0.28) 55%, rgba(32, 15, 13, 0.12) 100%)",
+      "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
     fallbackGradient:
-      "radial-gradient(120% 140% at 70% 20%, rgba(252, 232, 232, 0.96), rgba(235, 215, 215, 0.9) 52%, rgba(208, 229, 205, 0.88) 100%)",
+      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+    camera: { position: [0, 0, 15.0], fov: 15 },
+    rotateSpeed: 0.3,
+    scale: 2.2,
   },
   mission: {
-    kind: "video",
-    src: "https://cdn.pixabay.com/video/2023/01/22/147463-791696689_large.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80",
-    fallbackGradient:
-      "radial-gradient(120% 130% at 15% 85%, rgba(245, 236, 223, 0.98), rgba(219, 205, 181, 0.92) 50%, rgba(176, 158, 127, 0.9) 100%)",
+    kind: "model",
+    src: "/Shawarma.glb",
+    gradient:
+      " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
-      "linear-gradient(180deg, rgba(17, 10, 6, 0.18) 0%, rgba(24, 16, 10, 0.12) 65%, rgba(27, 18, 12, 0.05) 100%)",
+      "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
+    fallbackGradient:
+      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+    camera: { position: [0, 0, 15.0], fov: 15 },
+    rotateSpeed: 0.3,
+    scale: 2.2,
   },
   contact: {
-    kind: "video",
-    src: "https://cdn.coverr.co/videos/coverr-steaming-pasta-in-stainless-steel-pot-6606/1080p.mp4",
-    poster:
-      "https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=1600&q=80",
+    kind: "model",
+    src: "/Shawarma.glb",
+    gradient:
+      " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
-      "linear-gradient(180deg, rgba(20, 8, 7, 0.6) 0%, rgba(33, 14, 12, 0.32) 55%, rgba(36, 16, 14, 0.12) 100%)",
+      "linear-gradient(180deg, rgba(15,6,5,0.55) 0%, rgba(20,9,8,0.28) 45%, rgba(26,11,9,0.1) 100%)",
     fallbackGradient:
-      "radial-gradient(130% 130% at 80% 20%, rgba(253, 236, 236, 0.96), rgba(237, 221, 221, 0.9) 52%, rgba(208, 233, 208, 0.88) 100%)",
+      "radial-gradient(120% 120% at 20% 20%, rgba(255,244,244,0.96) 0%, rgba(245,226,226,0.94) 45%, rgba(234,220,220,0.9) 100%)",
+    camera: { position: [0, 0, 15.0], fov: 15 },
+    rotateSpeed: 0.3,
+    scale: 2.2,
   },
 };
 

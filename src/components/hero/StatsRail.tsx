@@ -14,7 +14,7 @@ export function StatsRail({
     return (
         <aside
             className={[
-                "pointer-events-none flex flex-col gap-6 md:gap-8 lg:gap-[6.5rem]",
+                "pointer-events-none flex flex-col gap-2 md:gap-4 lg:gap-[2rem]",
                 side === "left" ? "items-start text-left" : "items-end text-right",
             ].join(" ")}
         >
@@ -93,17 +93,17 @@ function AnimatedStat({ stat, index }: { stat: Stat; index: number }) {
         <div
             ref={elementRef}
             data-animate
-            className="pointer-events-auto rounded-2xl px-4 py-3"
+            className="pointer-events-auto rounded-2xl px-4"
         >
-            <div className="text-sm uppercase tracking-wide text-black/60">
+            <div className="text-xs uppercase tracking-wide text-white/70">
                 {stat.label}
             </div>
-            <div className="text-3xl md:text-6xl font-semibold md:font-medium leading-tight tabular-nums">
+            <div className="text-2xl md:text-6xl font-semibold text-white/90 md:font-medium leading-tight tabular-nums">
                 {displayValue}
+                {stat.hint ? (
+                    <span className="text-[8px] text-white/70">{stat.hint}</span>
+                ) : null}
             </div>
-            {stat.hint ? (
-                <div className="text-sm text-black/50">{stat.hint}</div>
-            ) : null}
         </div>
     );
 }

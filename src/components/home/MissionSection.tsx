@@ -1,47 +1,52 @@
-import type { RefObject } from "react";
+"use client"
 
-import type { MissionDetail } from "./types";
+import type { RefObject } from "react"
 
-type MissionSectionProps = {
-  sectionRef: RefObject<HTMLElement>;
-  details: MissionDetail[];
-};
-
-export function MissionSection({ sectionRef, details }: MissionSectionProps) {
+export function MissionSection({ sectionRef }: { sectionRef: RefObject<HTMLElement> }) {
   return (
     <section
       id="mission"
-      data-theme="mission"
       ref={sectionRef}
-      className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-24 text-[#2d1814] sm:px-8"
+      className="relative flex min-h-[100svh] w-full items-center justify-center text-white overflow-hidden"
     >
+      {/* Top-left copy (absolute on md+, flows on mobile) */}
       <div
-        className="rounded-[2.5rem] border border-white/65 bg-white/70 p-8 shadow-[0_45px_100px_rgba(123,18,25,0.18)] backdrop-blur-2xl"
-        data-animate
+        className="text-xs sm:text-sm font-medium leading-snug
+                   px-4 md:px-0
+                   md:absolute md:top-32 md:left-10"
+        data-animate="fade-in"
       >
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="max-w-3xl space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-[#e20613]">Misyonumuz</p>
-            <h2 className="text-3xl font-semibold leading-snug sm:text-4xl">
-              Misyonumuz, terroir’i kutlayan, ustalığı sergileyen ve sofrada birliktelik oluşturan bir lezzet galerisi kurmak.
-            </h2>
-            <p className="text-sm text-[#5f3b35]">
-              Her akşam; köz ateşinde mühürlenen tatlar, turunç esintili buharlar ve paylaşımı teşvik eden ritimler eşliğinde çok duyulu bir yolculuk olarak tasarlanıyor.
-            </p>
-          </div>
-          <div
-            className="flex flex-col gap-4 rounded-[2rem] border border-white/65 bg-white/80 p-6 text-sm text-[#5f3b35] shadow-inner"
-            data-animate="slide-left"
-          >
-            {details.map((detail) => (
-              <div key={detail.label}>
-                <p className="text-xs font-semibold uppercase tracking-[0.35em] text-[#0f7a38]">{detail.label}</p>
-                <p>{detail.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <p>
+          Her ateşte tam <br /> <span className="text-[#ff5500]">kontrol</span>
+        </p>
+      </div>
+
+      {/* Left vertical small text (absolute on md+, inline helper on mobile) */}
+      <div
+        className="hidden md:block absolute bottom-16 left-10 rotate-[-90deg] origin-left text-[0.65rem] tracking-[0.25em] uppercase text-neutral-400"
+        data-animate="slide-up"
+      >
+        Izgara Dengesi ve Lezzet
+      </div>
+      {/* mobile-only helper line to keep the feel without rotation */}
+      <div className="md:hidden mt-6 text-[0.7rem] tracking-[0.22em] uppercase text-neutral-400" data-animate="slide-up">
+        Izgara Dengesi ve Lezzet
+      </div>
+
+      {/* Center headline (absolute and half-width on md+, stacked on mobile) */}
+      <div
+        className="w-full px-4 md:px-0 text-center md:text-left
+                   md:w-1/2 md:absolute md:left-[50%] md:top-[10%]
+                   leading-[0.95]"
+        data-animate="slide-up"
+      >
+        <h2 className="text-[2.75rem] sm:text-[3.5rem] md:text-[4.5rem] lg:text-[6rem] tracking-tight">
+          ODUN<br />
+          ATEŞİ.<br />
+          <span className="text-[#ff5500]">TAM</span><br />
+          LEZZET.
+        </h2>
       </div>
     </section>
-  );
+  )
 }

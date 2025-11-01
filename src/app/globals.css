@@ -1,7 +1,12 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 html {
   scroll-behavior: smooth;
+}
+
+* {
+  font-family: "Poppins", sans-serif;
 }
 
 :root {
@@ -73,6 +78,104 @@ body {
 [data-animate="float"].is-visible {
   transform: translateY(0) scale(1);
 }
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes countFlip {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes digitScroll {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  40% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.word-slide {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  animation: wordSlideUp 0.7s ease-out forwards;
+}
+
+@keyframes wordSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.digit-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.digit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.digit-enter {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.digit-exit {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+
+.fade-up {
+  animation: fadeUp 1s ease-out forwards;
+}
+
+.number-flip {
+  display: inline-block;
+  animation: countFlip 0.4s ease-out forwards;
+}
+
 
 .hero-portal {
   position: relative;
@@ -195,6 +298,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .hero-glow,
   .hero-portal {
     transform: none !important;

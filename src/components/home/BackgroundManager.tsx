@@ -38,120 +38,81 @@ type BackgroundManagerProps = {
   prefersReducedMotion: boolean;
   videoRefs: MutableRefObject<Record<SectionKey, HTMLVideoElement | null>>;
 };
-
-function RotatingModel({
+export function RotatingModel({
   src,
-  rotateSpeed = 0.3, // idle spin rad/sec
+  isActive,
   scale = 1.2,
-  maxTilt = 0.35,    // radians of tilt from mouse
-  idleAfter = 900,   // ms of inactivity before idle spin
+  maxTilt = 0.5,   // slightly higher for sensitivity
 }: {
-  src: string;
-  rotateSpeed?: number;
-  scale?: number;
-  maxTilt?: number;
-  idleAfter?: number;
+  src: string
+  isActive?: boolean
+  scale?: number
+  maxTilt?: number
 }) {
-  const group = useRef<THREE.Group>(null!);
-  const gltf = Drei.useGLTF?.(src);
+  const group = useRef<THREE.Group>(null)
+  const gltf = Drei.useGLTF?.(src)
 
-  // pointer state
-  const targetTilt = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const lastPointerTs = useRef<number>(0);
-  const isPointerInside = useRef<boolean>(false);
+  const entryStart = useRef<number | null>(null)
+  const follow = useRef({ x: 0, y: 0 })
+  const target = useRef({ x: 0, y: 0 })
 
-  // entry animation state
-  const mountTs = useRef<number>(performance.now());
-  const entryDone = useRef<boolean>(false);
+  // ease helpers
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3)
+  const damp = (a: number, b: number, lambda: number, dt: number) =>
+    a + (b - a) * (1 - Math.exp(-lambda * dt))
 
-  // global listeners (works with pointer-events none)
+  // track cursor
   React.useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      lastPointerTs.current = performance.now();
-      isPointerInside.current = true;
-      // normalize to [-0.5, 0.5]
-      const nx = e.clientX / window.innerWidth - 4;
-      const ny = e.clientY / window.innerHeight - 4;
-      // invert ny so moving mouse up tilts model back slightly
-      targetTilt.current.y = -nx * maxTilt; // yaw around Y via mouse X
-      targetTilt.current.x = -ny * maxTilt; // pitch around X via mouse Y
-    };
-    const onLeave = () => {
-      isPointerInside.current = false;
-      // release to idle after timer
-      lastPointerTs.current = performance.now() - idleAfter - 1;
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerleave", onLeave, { passive: true });
-    return () => {
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerleave", onLeave);
-    };
-  }, [maxTilt, idleAfter]);
+      const nx = e.clientX / window.innerWidth - 0.5
+      const ny = e.clientY / window.innerHeight - 0.5
+      target.current.y = -nx * maxTilt
+      target.current.x = -ny * maxTilt
+    }
+    window.addEventListener("pointermove", onMove, { passive: true })
+    return () => window.removeEventListener("pointermove", onMove)
+  }, [maxTilt])
 
-  // tiny helper
-  const damp = (curr: number, target: number, lambda: number, dt: number) =>
-    curr + (target - curr) * (1 - Math.exp(-lambda * dt));
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  useFrame((_: any, delta: number) => {
-    const g = group.current;
-    if (!g) return;
+  // trigger entry animation
+  React.useEffect(() => {
+    if (isActive) entryStart.current = performance.now()
+  }, [isActive])
 
-    const now = performance.now();
+  useFrame((_, delta) => {
+    const g = group.current
+    if (!g) return
 
-    // 1) Entry animation: position Z and scale ease out
-    if (!entryDone.current) {
-      const t = Math.min(1, (now - mountTs.current) / 700);
-      const ease = 1 - Math.pow(1 - t, 3);
+    const now = performance.now()
 
-      const startZ = 0.15; // was 1.2, way too much
-      const endZ = 0.0;
-      g.position.z = THREE.MathUtils.lerp(startZ, endZ, ease);
-
-      const s = THREE.MathUtils.lerp(scale * 0.95, scale, ease);
-      g.scale.setScalar(s);
-
-      if (t >= 1) {
-        // hard-pin to target so no drift
-        g.position.z = 0;
-        g.scale.setScalar(scale);
-        entryDone.current = true;
-      }
-    } else {
-      g.position.z = 0;
-      g.scale.setScalar(scale);
+    // 1) entry rotation and lift
+    if (entryStart.current) {
+      const t = Math.min(1, (now - entryStart.current) / 1600) // ~1.6s
+      const e = easeOutCubic(t)
+      g.rotation.y = THREE.MathUtils.lerp(-Math.PI / 1.8, 0, e)
+      g.position.y = Math.sin(e * Math.PI) * 0.25
+      g.scale.setScalar(THREE.MathUtils.lerp(scale * 0.9, scale, e))
+      if (t >= 1) entryStart.current = null
     }
 
-    // 2) Decide if we are idle
-    const idle = now - lastPointerTs.current > idleAfter || !isPointerInside.current;
+    // 2) follow cursor (smooth and responsive)
+    follow.current.x = damp(follow.current.x, target.current.x, 6, delta)
+    follow.current.y = damp(follow.current.y, target.current.y, 6, delta)
 
-    if (idle) {
-      // smooth autorotate and decay tilt back to neutral
-      g.rotation.y += delta * rotateSpeed;
-      g.rotation.x = damp(g.rotation.x, 0, 6, delta);
-      // keep a tiny forward tilt so it’s not dead flat
-      g.rotation.z = damp(g.rotation.z, 0, 6, delta);
-    } else {
-      // move toward mouse-driven tilt
-      g.rotation.x = damp(g.rotation.x, targetTilt.current.x, 8, delta);
-      g.rotation.y = damp(g.rotation.y, targetTilt.current.y, 8, delta);
-      // optional slight bank based on X to feel nicer
-      const bank = -targetTilt.current.y * 0.25;
-      g.rotation.z = damp(g.rotation.z, bank, 8, delta);
-    }
-  });
+    g.rotation.x = follow.current.x
+    g.rotation.y += (follow.current.y - g.rotation.y) * 0.1 // small easing drift
+  })
 
-  // scene
   return (
     <group ref={group}>
-      {Drei.Center ? (
+      {Drei.Center && (
         <Drei.Center>
-          {gltf?.scene ? <primitive object={gltf.scene} scale={scale} /> : null}
+          {gltf?.scene ? <primitive object={gltf.scene.clone()} scale={scale} /> : null}
         </Drei.Center>
-      ) : null}
+      )}
     </group>
-  );
+  )
 }
+
 
 export function BackgroundManager({
   entries,
@@ -230,13 +191,13 @@ export function BackgroundManager({
               aria-hidden
               className={`${baseClasses} ${isActive ? "opacity-100" : "opacity-0"}`}
             >
-              <img src={"/media/smoky_cloud.png"} alt="" className="absolute bottom-0 w-full z-1 opacity-30" />
-              <video src="/media/coffee.mp4" className="absolute right-0 w-[45%] top-0" muted autoPlay loop></video>
+              {/* <img src={"/media/smoky_cloud.png"} alt="" className="absolute bottom-0 w-full z-1 opacity-30" /> */}
+              {/* <video src="/media/coffee.mp4" className="absolute right-0 w-[45%] top-0" muted autoPlay loop></video> */}
               {/* gradient base (z-0) */}
               <div className="absolute inset-0 z-0" style={{ background: c.gradient || c.fallbackGradient || "transparent" }} />
 
               {/* the faded background text (under the Canvas) */}
-              <FadedBackdropText baseScale={0.8} duration={0.4} delayStep={0.08} text="ISTANBUL" subtext="Pilic" opacity={0.62} />
+              {/* <FadedBackdropText baseScale={0.8} duration={0.4} delayStep={0.08} text="ISTANBUL" subtext="Pilic" opacity={0.62} /> */}
 
               {!prefersReducedMotion && Canvas ? (
                 <Suspense fallback={null}>
@@ -254,7 +215,8 @@ export function BackgroundManager({
                     {Drei.Environment ? <Drei.Environment preset="city" /> : null}
                     <RotatingModel
                       src={c.src}
-                      rotateSpeed={c.rotateSpeed ?? 0.3}
+                      // rotateSpeed={c.rotateSpeed ?? 0.3}
+                      isActive={isActive}
                       scale={c.scale ?? 1.2}
                     />
                     {Drei.OrbitControls ? (
