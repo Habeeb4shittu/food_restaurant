@@ -30,7 +30,7 @@ export const navLinks: NavLink[] = [
 export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   hero: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
     overlay:
@@ -43,7 +43,7 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
   statsSection: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
     overlay:
@@ -56,7 +56,7 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
   highlights: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(to bottom, rgba(255, 210, 150, 0.5) 0%, rgba(255, 190, 120, 0.45) 20%, rgba(255, 170, 100, 0.35) 40%, rgba(240, 150, 100, 0.3) 55%, rgba(220, 130, 90, 0.25) 70%, rgba(200, 180, 160, 0.3) 85%, rgba(230, 225, 220, 0.9) 100%)",
     overlay:
@@ -69,7 +69,7 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
   promise: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
@@ -82,7 +82,7 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
   mission: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
@@ -95,7 +95,7 @@ export const backgroundConfigs: Record<SectionKey, BackgroundConfig> = {
   },
   contact: {
     kind: "model",
-    src: "/Shawarma.glb",
+    src: "/Kebaba.glb",
     gradient:
       " linear-gradient(135deg,#131215 0%,#121317 20%,#141518 40%,#16171B 60%,#1A1A1F 80%)",
     overlay:
